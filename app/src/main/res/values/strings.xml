@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">InTime</string>
+    <string name="tab_text_1">Alarms</string>
+    <string name="tab_text_2">Clocks</string>
+    <string name="tab_text_3">Stopwatch</string>
+    <string name="tab_text_4">Timer</string>
+</resources>
