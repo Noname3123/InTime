@@ -4,4 +4,19 @@
     <string name="tab_text_2">Clocks</string>
     <string name="tab_text_3">Stopwatch</string>
     <string name="tab_text_4">Timer</string>
+    <string name="AlarmFragmentTitle">Alarms</string>
+    <string name="AlarmAddButton">Add</string>
+    <string name="AlarmTitle1">TestAlarmName</string>
+    <string name="AlarmIcon">IconOfAnAlarmClock</string>
+    <string name="AlarmTime">12:00</string>
+    <string name="AlarmSwitch">Enabled</string>
+    <string name="AlarmEdit">Edit</string>
+    <string name="AlarmDelete">Delete</string>
+    <string name="StopwatchTitle">Stopwatch</string>
+    <string name="StopwatchTime">00:00:00</string>
+    <string name="LapsTextTitle">Laps: </string>
+    <string name="ButtonStart">Start</string>
+    <string name="ButtonLap">Lap</string>
+    <string name="ButtonStop">Stop</string>
+    <string name="ButtonStopVar2">Reset</string>
 </resources>
