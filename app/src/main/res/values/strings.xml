@@ -15,6 +15,7 @@
     <string name="StopwatchTitle">Stopwatch</string>
     <string name="StopwatchTime">00:00:00</string>
     <string name="LapsTextTitle">Laps: </string>
+    <string name="LapsData"></string>
     <string name="ButtonStart">Start</string>
     <string name="ButtonLap">Lap</string>
     <string name="ButtonStop">Stop</string>
