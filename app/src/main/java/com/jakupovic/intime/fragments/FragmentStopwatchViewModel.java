@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 //this class implements data related to the stopwatch
 class StopwatchState{
- public int seconds=0;
+ public float seconds=0;
  public boolean running=false;
  public boolean wasRunning=false;
 

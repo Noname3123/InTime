@@ -19,5 +19,5 @@
     <string name="ButtonStart">Start</string>
     <string name="ButtonLap">Lap</string>
     <string name="ButtonStop">Stop</string>
-    <string name="ButtonStopVar2">Reset</string>
+    <string name="ButtonReset">Reset</string>
 </resources>

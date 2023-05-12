@@ -29,6 +29,8 @@ public class FragmentStopwatch extends Fragment {
     private Button buttonStop;
     private Button buttonLap;
 
+    private final int stopwatchHandlerDelay=100;
+
     public static FragmentStopwatch newInstance() {
         return new FragmentStopwatch();
     }
@@ -63,7 +65,6 @@ public class FragmentStopwatch extends Fragment {
                 onClickLap(v);
             }
         });
-
         runStopwatch();
         return fragment;
     }
@@ -72,6 +73,8 @@ public class FragmentStopwatch extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(FragmentStopwatchViewModel.class);
+        decideLapButtonVisibility();
+
 
     }
     @Override
@@ -95,13 +98,29 @@ public class FragmentStopwatch extends Fragment {
      * */
     public void onClickStart(View view){
         mViewModel.getStopwatchState().getValue().running=true;
+        decideLapButtonVisibility();
+        buttonStop.setText(R.string.ButtonStop);
+
     }
     /**this method takes the View as an argument and is called when user clicks on stop button in the stopwatch
      * @param view
      * @return void
      * */
     public void onClickStop(View view){
+        if(mViewModel.getStopwatchState().getValue().running==true)
+        {
         mViewModel.getStopwatchState().getValue().running=false;
+            decideLapButtonVisibility();
+        if(mViewModel.getStopwatchState().getValue().seconds>0) {
+         buttonStop.setText(R.string.ButtonReset);
+        }
+        }
+         else if (mViewModel.getStopwatchState().getValue().running==false && (mViewModel.getStopwatchState().getValue().seconds>0 ||mViewModel.getStopwatchState().getValue().memorisedLaps.length()>0 )) {
+            onClickReset(view);
+            buttonStop.setText(R.string.ButtonStop);
+            decideLapButtonVisibility();
+        }
+
     }
 /**
  * this method takes View as argument and is called when user click on lap button in the stopwatch and adds the lap data to the lapdata text view
@@ -109,36 +128,49 @@ public class FragmentStopwatch extends Fragment {
  * @return void
  * */
     public void onClickLap(View view){
+        //if seconds >=1
+        if (mViewModel.getStopwatchState().getValue().seconds>=1){
+            mViewModel.getStopwatchState().getValue().memorisedLaps += "lap " + ((mViewModel.getStopwatchState().getValue().lapCount++) + 1) + " " + calculateTimeFormat() + "\n";
+            updateLapData();
+            mViewModel.getStopwatchState().getValue().seconds = 0;
+            decideLapButtonVisibility(); }
 
-        mViewModel.getStopwatchState().getValue().memorisedLaps+="lap "+ ( (mViewModel.getStopwatchState().getValue().lapCount++)+1)+" " + calculateTimeFormat() + "\n";
-        updateLapData();
-        mViewModel.getStopwatchState().getValue().seconds=0;
     }
     /**this method takes the View as an argument and is called when user clicks on reset button in the stopwatch
      * @param view
      * @return void
      * */
+    /**this method takes no params, it is called whenever user clicks the stopwatch start/ stop button and it is called on activity init
+     * @param
+     * @return void
+     * */
+    public void decideLapButtonVisibility(){
+        if(mViewModel.getStopwatchState().getValue().running || mViewModel.getStopwatchState().getValue().memorisedLaps.length()>0 || mViewModel.getStopwatchState().getValue().seconds>0) {
+            buttonLap.setVisibility(View.VISIBLE);
+        }
+        else {
+            buttonLap.setVisibility(View.GONE);
+        }
+
+    }
     public void onClickReset(View view){
         mViewModel.getStopwatchState().getValue().running=false;
         mViewModel.getStopwatchState().getValue().seconds=0;
         mViewModel.getStopwatchState().getValue().lapCount=0;
         mViewModel.getStopwatchState().getValue().memorisedLaps="";
+        updateLapData();
     }
     /**this method takes the seconds stored in the stopwatch viewmodel and formats them in a string
      * @params none
      * @return String
      * */
     String calculateTimeFormat(){
-        int hours= mViewModel.getStopwatchState().getValue().seconds/3600;
-        int minutes = ( mViewModel.getStopwatchState().getValue().seconds % 3600)/60;
-        int secs= mViewModel.getStopwatchState().getValue().seconds % 60;
+        int hours= (int)mViewModel.getStopwatchState().getValue().seconds/3600;
+        int minutes = (int)( mViewModel.getStopwatchState().getValue().seconds % 3600)/60;
+        int secs= (int) mViewModel.getStopwatchState().getValue().seconds % 60;
         return String.format(Locale.getDefault(),"%02d:%02d:%02d", hours, minutes, secs);
     }
-/**
- * This method is responsible for "counting" when the stopwatch activity runs, it is called constantly, since the activity created in onCreate and it will call itself every one second [YOU SHOULD FIX THIS FOR OPTIMIZATION PURPOSES]
- * @params
- * @return void
- * */
+
     /**
      * method updates lap data inside fragment using the saved value in stopwatch view model
      * @param
@@ -148,6 +180,11 @@ public class FragmentStopwatch extends Fragment {
         lapDataTextView.setText( mViewModel.getStopwatchState().getValue().memorisedLaps);
 
     }
+    /**
+     * This method is responsible for "counting" when the stopwatch activity runs, it is called constantly, since the activity created in onCreate and it will call itself every one second [YOU SHOULD FIX THIS FOR OPTIMIZATION PURPOSES]
+     * @params
+     * @return void
+     * */
     private void runStopwatch(){
 
 
@@ -159,9 +196,9 @@ public class FragmentStopwatch extends Fragment {
 
                 stopwatchText.setText(calculateTimeFormat());
                 if (mViewModel.getStopwatchState().getValue().running){
-                    mViewModel.getStopwatchState().getValue().seconds ++;
+                    mViewModel.getStopwatchState().getValue().seconds +=stopwatchHandlerDelay/1000.0f;
                 }
-                handler.postDelayed(this, 1000);
+                handler.postDelayed(this, stopwatchHandlerDelay);
             }
 
         });
