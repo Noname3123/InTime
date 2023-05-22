@@ -28,6 +28,9 @@
     <string name="alarmTimeInputField">Write activation time</string>
     <string name="ClockFragmentTitle">Clocks</string>
     <string name="ClockTimeFormat">00:00</string>
+    <string name="ClockIcon">Icon of a custom timezone clock</string>
+    <string name="ClockTimezoneName">New York Standard Time (example)</string>
+    <string name="TimezoneLocalTime">00:00</string>
     <string-array name="SpinnerTimezone">
         <item> Default timezone (example) </item>
         <item> New York Time (example)</item>

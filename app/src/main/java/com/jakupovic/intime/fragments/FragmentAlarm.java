@@ -10,7 +10,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,9 +38,9 @@ private Context alarmFragment_Context;
         View fragment= (View)inflater.inflate(R.layout.fragment_fragment_alarm, container, false); //view which will create itself
         alarmFragment_Context=fragment.getContext(); //get context of current view and save it for later use: context - layer of activity/ component which provides functionalities supported by application or Android framework. context exists as long as the activity/ component is active
         //find the scrollbox which contains alarm view
-         alarmCardContainer=(ViewGroup) fragment.findViewById(R.id.AlarmCardList);
+         alarmCardContainer=(ViewGroup) fragment.findViewById(R.id.ClockCardList);
 
-         addAlarm = fragment.findViewById(R.id.buttonAddAlarm);
+         addAlarm = fragment.findViewById(R.id.buttonAddClock);
         //this executes the add alarm function when the ADD button is clicked
         addAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +83,7 @@ private Context alarmFragment_Context;
      * @return void
      * */
     public void registerAlarmCardButtons(CardView card){
+        //TODO: add event registers for other buttons (such as edit and enable switch)
         //get buttons
         Button editButton=card.findViewById(R.id.buttonEdit);
         Button enabledSwitch=card.findViewById(R.id.alarmSwitch);
