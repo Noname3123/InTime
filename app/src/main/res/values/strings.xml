@@ -25,6 +25,14 @@
     <string name="alarmSaveButton">Save Alarm</string>
     <string name="alarmTitleInputFieldText">Write alarm title</string>
     <string name="alarmDescInputFieldText">Write alarm description</string>
+    <string name="alarmTimeInputField">Write activation time</string>
+    <string-array name="SpinnerTimezone">
+        <item> Default timezone (example) </item>
+        <item> New York Time (example)</item>
+        <item> Tokyo Time (example)</item>
+        <item> L. A. Time (example)</item>
+        <item> Chicago Time (example)</item>
+    </string-array>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

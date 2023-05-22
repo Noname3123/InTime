@@ -3,6 +3,8 @@ package com.jakupovic.intime.fragments;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.jakupovic.intime.R;
+import com.jakupovic.intime.alarmEditMenu.AlarmEditSettings;
 
 public class FragmentAlarm extends Fragment {
 
@@ -26,22 +29,31 @@ public class FragmentAlarm extends Fragment {
     }
 
     private Button addAlarm;
+
 private ViewGroup alarmCardContainer;
+
+private Context alarmFragment_Context;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View fragment= (View)inflater.inflate(R.layout.fragment_fragment_alarm, container, false);
+        View fragment= (View)inflater.inflate(R.layout.fragment_fragment_alarm, container, false); //view which will create itself
+        alarmFragment_Context=fragment.getContext(); //get context of current view and save it for later use: context - layer of activity/ component which provides functionalities supported by application or Android framework. context exists as long as the activity/ component is active
         //find the scrollbox which contains alarm view
          alarmCardContainer=(ViewGroup) fragment.findViewById(R.id.AlarmCardList);
-        addAlarm = fragment.findViewById(R.id.buttonAddAlarm);
+
+         addAlarm = fragment.findViewById(R.id.buttonAddAlarm);
         //this executes the add alarm function when the ADD button is clicked
         addAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addAlarmCard(); //TODO: replace with a more appropriate function (create/edit alarm activity)
+                Intent intent=new Intent(alarmFragment_Context, AlarmEditSettings.class); //gets the intent for which the new activity/window will open
+                startActivity(intent); //create a new window which edits the alarm settings
             }
         });
-//TODO: create a function which reads alarm database and generates cards with addAlarmCard func
+
+
+        //TODO: create a function in onCreateView which reads alarm database and generates cards with addAlarmCard func
         return fragment;
     }
 
