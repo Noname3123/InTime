@@ -26,6 +26,8 @@
     <string name="alarmTitleInputFieldText">Write alarm title</string>
     <string name="alarmDescInputFieldText">Write alarm description</string>
     <string name="alarmTimeInputField">Write activation time</string>
+    <string name="ClockFragmentTitle">Clocks</string>
+    <string name="ClockTimeFormat">00:00</string>
     <string-array name="SpinnerTimezone">
         <item> Default timezone (example) </item>
         <item> New York Time (example)</item>
