@@ -16,10 +16,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.jakupovic.intime.R;
+import com.jakupovic.intime.interfaces.HandlerManager;
 
 import java.util.Locale;
 
-public class FragmentStopwatch extends Fragment {
+public class FragmentStopwatch extends Fragment implements HandlerManager {
 
     private FragmentStopwatchViewModel mViewModel;
     //get text view
@@ -65,7 +66,7 @@ public class FragmentStopwatch extends Fragment {
                 onClickLap(v);
             }
         });
-        runStopwatch();
+
         return fragment;
     }
 
@@ -73,9 +74,17 @@ public class FragmentStopwatch extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(FragmentStopwatchViewModel.class);
+
         decideLapButtonVisibility();
 
 
+    }
+
+    @Override
+    //method is called when new activity is called and it stops handlers
+    public void onStop(){
+        HandlerManager.ResetHandler(mViewModel.getStopwatchState().getValue().stopwatchCounter); //reset stopwatch counter if already the thread exists after another activity opened
+        super.onStop();
     }
     @Override
     ///method pauses the stopwatch if the activity is not in focus (such as app is minimized)
@@ -87,6 +96,17 @@ public class FragmentStopwatch extends Fragment {
     ///stopwatch automatically resumes after user focuses into activity
     public void onResume(){
         super.onResume();
+        HandlerManager.RegisterHandlerFunction(mViewModel.getStopwatchState().getValue().stopwatchCounter, new Runnable() {
+            @Override
+            public void run() {
+                stopwatchText.setText(calculateTimeFormat());
+                if (mViewModel.getStopwatchState().getValue().running){
+                    mViewModel.getStopwatchState().getValue().seconds +=stopwatchHandlerDelay/1000.0f;
+                }
+                mViewModel.getStopwatchState().getValue().stopwatchCounter.postDelayed(this, stopwatchHandlerDelay);
+            }
+
+        });
         if(mViewModel.getStopwatchState().getValue().wasRunning){
             mViewModel.getStopwatchState().getValue().running=true;
         }
@@ -179,29 +199,6 @@ public class FragmentStopwatch extends Fragment {
     public void updateLapData() {
         lapDataTextView.setText( mViewModel.getStopwatchState().getValue().memorisedLaps);
 
-    }
-    /**
-     * This method is responsible for "counting" when the stopwatch activity runs, it is called constantly, since the activity created in onCreate and it will call itself every one second [YOU SHOULD FIX THIS FOR OPTIMIZATION PURPOSES]
-     * @params
-     * @return void
-     * */
-    private void runStopwatch(){
-
-
-        //Handler
-        final Handler handler=new Handler();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-
-                stopwatchText.setText(calculateTimeFormat());
-                if (mViewModel.getStopwatchState().getValue().running){
-                    mViewModel.getStopwatchState().getValue().seconds +=stopwatchHandlerDelay/1000.0f;
-                }
-                handler.postDelayed(this, stopwatchHandlerDelay);
-            }
-
-        });
     }
 
 }

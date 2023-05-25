@@ -6,7 +6,8 @@ import androidx.lifecycle.ViewModel;
 
 public class ClockViewModel extends ViewModel {
     private  final MutableLiveData<ClockLocalData> clockData= new MutableLiveData(new ClockLocalData());
-    /**method returns data from the stopwatch viewmodel*/
+    /**method returns data from the stopwatch viewmodel
+     * */
     public LiveData<ClockLocalData> getClockData (){
         return clockData;
     }

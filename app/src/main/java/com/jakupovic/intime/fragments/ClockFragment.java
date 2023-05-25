@@ -17,13 +17,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.jakupovic.intime.R;
+import com.jakupovic.intime.interfaces.HandlerManager;
 
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-public class ClockFragment extends Fragment {
+public class ClockFragment extends Fragment implements HandlerManager {
 
     private ClockViewModel mViewModel;
     private TextView localClock;
@@ -54,7 +55,6 @@ public class ClockFragment extends Fragment {
         });
 
 
-        runClock();
         return fragment;
     }
 
@@ -62,8 +62,31 @@ public class ClockFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(ClockViewModel.class);
+
     }
 
+
+
+    @Override
+    //called when activity is stopped (becouse a new one is open), it unregisters the clock handler
+    public void onStop(){
+        super.onStop();
+        HandlerManager.ResetHandler(mViewModel.getClockData().getValue().clockUpdateHandler);
+    }
+    @Override
+    //re-registers clock handler when the activity resumes itself
+    public void onResume(){
+        super.onResume();
+        HandlerManager.RegisterHandlerFunction(mViewModel.getClockData().getValue().clockUpdateHandler, new Runnable() {
+            @Override
+            public void run() {
+                mViewModel.getClockData().getValue().time = new GregorianCalendar().getTime();
+                localClock.setText(calculateClockFormat());
+
+                mViewModel.getClockData().getValue().clockUpdateHandler.postDelayed(this, clockUpdateInterval);
+            }
+        });
+    }
 /**this method adds a card representing a clock in a timezone
  * @params clock (entity database type)
  * @return void
