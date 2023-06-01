@@ -92,7 +92,7 @@ public class ClockFragment extends Fragment implements HandlerManager {
  * @return void
  * */
     public void addClockCard() {
-        //TODO: this func will take a parameter which represents clock timezone data, and will instantiate a card instance in the scroll view
+        //TODO: this func will take a parameter which represents clock timezone data, and will instantiate a card instance in the scroll view, id of the created card must be equal to the id of the alarm entry in the DB
 
         //inflate a card view with a context, from xml: alarm_data_card and without a root/parent
         CardView card = (CardView) View.inflate(this.getContext(), R.layout.clock_data_card, null);
