@@ -3,12 +3,13 @@ package com.jakupovic.intime.fragments;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.jakupovic.intime.R;
+import com.jakupovic.intime.alarmEditMenu.AlarmEditSettings;
 
 public class FragmentAlarm extends Fragment {
 
@@ -26,22 +28,31 @@ public class FragmentAlarm extends Fragment {
     }
 
     private Button addAlarm;
+
 private ViewGroup alarmCardContainer;
+
+private Context alarmFragment_Context;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View fragment= (View)inflater.inflate(R.layout.fragment_fragment_alarm, container, false);
+        View fragment= (View)inflater.inflate(R.layout.fragment_fragment_alarm, container, false); //view which will create itself
+        alarmFragment_Context=fragment.getContext(); //get context of current view and save it for later use: context - layer of activity/ component which provides functionalities supported by application or Android framework. context exists as long as the activity/ component is active
         //find the scrollbox which contains alarm view
-         alarmCardContainer=(ViewGroup) fragment.findViewById(R.id.AlarmCardList);
-        addAlarm = fragment.findViewById(R.id.buttonAddAlarm);
+         alarmCardContainer=(ViewGroup) fragment.findViewById(R.id.ClockCardList);
+
+         addAlarm = fragment.findViewById(R.id.buttonAddClock);
         //this executes the add alarm function when the ADD button is clicked
         addAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addAlarmCard(); //TODO: replace with a more appropriate function (create/edit alarm activity)
+                Intent intent=new Intent(alarmFragment_Context, AlarmEditSettings.class); //gets the intent for which the new activity/window will open
+                startActivity(intent); //create a new window which edits the alarm settings
             }
         });
-//TODO: create a function which reads alarm database and generates cards with addAlarmCard func
+
+
+        //TODO: create a function in onCreateView which reads alarm database and generates cards with addAlarmCard func
         return fragment;
     }
 
@@ -59,7 +70,7 @@ private ViewGroup alarmCardContainer;
      * @return void
      * */
     public void addAlarmCard(){
-        //TODO: this func will take a parameter which represents alarm data, and will instantiate a card instance in the scroll view
+        //TODO: this func will take a parameter which represents alarm data, and will instantiate a card instance in the scroll view, id of the created card is equal to the id of the alarm entry in the DB
 
         //inflate a card view with a context, from xml: alarm_data_card and without a root/parent
         CardView card = (CardView) View.inflate(this.getContext(),R.layout.alarm_data_card,null);
@@ -72,6 +83,7 @@ private ViewGroup alarmCardContainer;
      * @return void
      * */
     public void registerAlarmCardButtons(CardView card){
+        //TODO: add event registers for other buttons (such as edit and enable switch)
         //get buttons
         Button editButton=card.findViewById(R.id.buttonEdit);
         Button enabledSwitch=card.findViewById(R.id.alarmSwitch);

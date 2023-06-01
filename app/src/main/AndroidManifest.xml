@@ -11,6 +11,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.InTime"
         tools:targetApi="31">
+        <!--activity
+            android:name=".alarmEditMenu.AlarmEditSettings"
+            android:exported="false" /-->
+        <activity
+            android:name=".alarmEditMenu.AlarmEditSettings"
+            android:exported="false"
+            android:label="@string/title_activity_alarmedit"
+            android:theme="@style/Theme.InTime.NoActionBar" />
         <activity
             android:name=".fragments.MainActivity"
             android:exported="true"

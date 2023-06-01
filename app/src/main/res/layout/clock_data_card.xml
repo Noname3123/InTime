@@ -3,7 +3,8 @@
 
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
-        android:id="@+id/ClockCardView"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ClockCardView"
         android:layout_width="wrap_content"
         android:layout_height="250dp"
         app:cardCornerRadius="16dp">
@@ -16,67 +17,48 @@
                 android:id="@+id/buttonEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/ClockTimezone"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
-                android:backgroundTint="#C5C7C9"
-                android:text="@string/AlarmEdit"
-                android:layout_below="@id/clockIcon"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="87dp"/>
+                android:layout_marginTop="87dp"
+                android:backgroundTint="#C5C7C9"
+                android:text="@string/AlarmEdit" />
 
             <Button
                 android:id="@+id/buttonDelete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/ClockTimezone"
+                android:layout_alignEnd="@id/ClockTimezone"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
+                android:layout_marginTop="87dp"
+                android:layout_marginEnd="10dp"
                 android:backgroundTint="@android:color/holo_red_dark"
                 android:text="@string/AlarmDelete"
-                android:layout_alignEnd="@id/buttonEdit"
-                android:textSize="13sp"
-                android:layout_below="@id/alarmSwitch"
-                android:layout_marginEnd="10dp"
-                android:layout_marginTop="8dp"/>
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/ClockTimezone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="5dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:text="@string/AlarmTitle1"
+                android:layout_marginStart="5dp"
+                android:text="@string/ClockTimezoneName"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/TimezoneLocalTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
 
-                android:text="@string/AlarmTime"
+                android:layout_centerInParent="true"
+                android:text="@string/TimezoneLocalTime"
                 android:textAlignment="center"
                 android:textSize="24sp" />
 
-            <ImageView
-                android:id="@+id/clockIcon"
-                android:layout_width="52dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="5dp"
-                android:layout_below="@+id/ClockTimezone"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/AlarmIcon"
-                android:src="@android:drawable/ic_lock_idle_alarm"
-                 />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/alarmSwitch"
-                android:layout_alignEnd="@id/TimezoneLocalTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:text="@string/AlarmSwitch" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
