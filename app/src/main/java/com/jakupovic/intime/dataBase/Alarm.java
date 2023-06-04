@@ -17,6 +17,10 @@ public class Alarm {
     public Date timeToStartInTimezone;
     @ColumnInfo (name="local activation time")
     public Date localStartTime;
+    @ColumnInfo (name="Alarm title")
+    public Date alarmTitle;
+    @ColumnInfo (name="alarm description")
+    public Date alarmDesc;
     @ColumnInfo(name = "Enabled")
     public boolean enabled;
 }
