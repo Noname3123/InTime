@@ -18,5 +18,9 @@ public class Clock {
     public String location;
 
     @ColumnInfo(name="Time zone")
-    public TimeZone timeZone;
+    /**
+     * stores the ID of time zone, ID of timezone is string ex. Europe/Oslo. Then you can use TimeZone.getTimeZone("Europe/Oslo") to calculate the timezone
+     * */
+    public String timeZone;
+
 }

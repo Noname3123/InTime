@@ -26,7 +26,7 @@ public interface ClockDAO {
    Clock getClockByID(int clockID);
 
    @Query("SELECT * FROM Clock where Clock.`Description of location` LIKE :locationDescription AND Clock.`Time zone` LIKE :timeZone ")
-   List<Clock> getClockByDescAndTimeZone(String locationDescription, TimeZone timeZone);
+   List<Clock> getClockByDescAndTimeZone(String locationDescription, String timeZone);
    @Update
    void updateClock(Clock clock);
    @Delete

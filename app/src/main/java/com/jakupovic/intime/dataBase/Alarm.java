@@ -14,13 +14,19 @@ public class Alarm {
     @PrimaryKey (autoGenerate = true)
     public int alarmID;
     @ColumnInfo(name= "time zone time")
-    public Date timeToStartInTimezone;
+    /**
+     * Convert date data object to long and vice-versa when storing time into DB
+     * */
+    public Long timeToStartInTimezone;
     @ColumnInfo (name="local activation time")
-    public Date localStartTime;
+    /**
+     * Convert date data object to long and vice-versa when storing time into DB
+     * */
+    public Long localStartTime;
     @ColumnInfo (name="Alarm title")
-    public Date alarmTitle;
+    public String alarmTitle;
     @ColumnInfo (name="alarm description")
-    public Date alarmDesc;
+    public String alarmDesc;
     @ColumnInfo(name = "Enabled")
     public boolean enabled;
 }
