@@ -17,18 +17,41 @@ import java.util.TimeZone;
 @Dao
 public interface ClockDAO {
    @Insert
-   void insert(Clock clock);
+   /**
+    * insert the object into DB and return ID value
+    *
+    * */
+   long insert(Clock clock);
 
-   //TODO: add @query, update and remove methods for clock database
    @Query("SELECT * FROM Clock")
    List<Clock> getAll();
    @Query("SELECT * FROM Clock where Clock.id == :clockID")
+   /**
+    * this method returns clock instance from database by ID
+    * @params int clock ID
+    * @return Clock
+    * */
    Clock getClockByID(int clockID);
 
    @Query("SELECT * FROM Clock where Clock.`Description of location` LIKE :locationDescription AND Clock.`Time zone` LIKE :timeZone ")
+   /**
+    * this method returns clock instances from database with appropriate location and timezone descriptions
+    * @params String locationDescription, String timeZone
+    * @return List<Clock>
+    * */
    List<Clock> getClockByDescAndTimeZone(String locationDescription, String timeZone);
    @Update
+   /**
+    * this method updates clock instance inside database by matching id of object sent to the DAO
+    * @params Clock clock
+    * @return Void
+    * */
    void updateClock(Clock clock);
    @Delete
+   /**
+    * this method deletes clock instance from database by matching id of object sent to the DAO
+    * @params Clock clock
+    * @return Void
+    * */
    void delete(Clock clock);
 }

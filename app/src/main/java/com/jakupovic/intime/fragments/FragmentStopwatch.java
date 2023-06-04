@@ -32,6 +32,12 @@ public class FragmentStopwatch extends Fragment implements HandlerManager {
 
     private final int stopwatchHandlerDelay=100;
 
+    /**
+     * a getter function which returns the viewModel of this fragment. It is used primarily for testing
+     * */
+    public FragmentStopwatchViewModel getmViewModel(){
+        return mViewModel;
+    }
     public static FragmentStopwatch newInstance() {
         return new FragmentStopwatch();
     }

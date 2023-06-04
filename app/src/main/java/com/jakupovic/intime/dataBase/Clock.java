@@ -4,6 +4,7 @@ import android.icu.util.TimeZone;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 /**
  * this class represents entity for clocks and stores clock data in DB
@@ -23,4 +24,24 @@ public class Clock {
      * */
     public String timeZone;
 
+    /**
+     * constructor for the clock class
+     * @param id - int id of the entity, used when updating said entity
+     * @param location - string description of location
+     * @param timeZone - string ID of timezone
+     * */@Ignore
+public Clock(int id,String location, String timeZone){
+  if(id!=-1){ this.id=id;}
+    this.location=location;
+    this.timeZone=timeZone;
+}
+
+    /**
+     * overriden constructor for the clock class, used when creating new entity entries in DB
+     * @param location - string description of location
+     * @param timeZone - string ID of timezone
+     * */
+    public Clock(String location, String timeZone){
+        this(-1,location,timeZone);
+    }
 }
