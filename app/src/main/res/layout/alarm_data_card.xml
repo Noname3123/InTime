@@ -53,11 +53,28 @@
                 android:id="@+id/AlarmCardTimezoneLocalTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
 
+                android:layout_centerInParent="true"
                 android:text="@string/AlarmTime"
                 android:textAlignment="center"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/alarmCardTimezoneTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_below="@id/AlarmCardTimezoneLocalTime"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentRight="false"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="false"
+                android:layout_centerHorizontal="true"
+                android:text="@string/AlarmTime"
+                android:textAlignment="center"
+                android:textSize="24sp"
+                android:textStyle="italic" />
 
             <ImageView
                 android:id="@+id/clockIcon"

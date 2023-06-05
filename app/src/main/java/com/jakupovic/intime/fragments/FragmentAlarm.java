@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.jakupovic.intime.R;
@@ -63,7 +64,6 @@ private Context alarmFragment_Context;
         });
 
 
-        //TODO: create a function in onCreateView which reads alarm database and generates cards with addAlarmCard func
         return fragment;
     }
 
@@ -71,14 +71,53 @@ private Context alarmFragment_Context;
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(FragmentAlarmViewModel.class);
-        GetAllAlarms();
+       // insertAlarmAsync(new Alarm(Long.valueOf("1685980800000"),Long.valueOf("1685973600000"),"This is a title","This is an alarm Descr",true));
+       // insertAlarmAsync(new Alarm(Long.valueOf("1685980800000"),Long.valueOf("1685973600000"),"This is a 2nd title","This is an alarm Descr",true));
+        GetAllAlarmsAsync();
+
+    }
+    /**
+     * this method accesses the alarm DAO and inserts the alarm in the database in background
+     * @param alarm  - alarm to insert (class: alarm)
+     * @return  int - ID of the inserted item
+     * */
+    public void insertAlarmAsync(Alarm alarm){
+        Handler insertHandler = new Handler(){
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+                Bundle messageBundle = msg.getData();
+                int ID=messageBundle.getInt("INSERTED_ID");
+                mViewModel.getAlarmViewModelData().getValue().alarmID=ID;
+
+
+
+            }
+        };
+
+        // executable which contains a query
+        Runnable alarmQuery = new Runnable() {
+            Message queryHandlerMessage=insertHandler.obtainMessage(); //get old message if there was one
+            Bundle messageBundle=new Bundle(); //create a new bundle for the message
+            List<Alarm> allAlarms;
+            @Override
+            public void run() {
+                int elementID=(int)mViewModel.getAlarmViewModelData().getValue().alarmDAO.insert(alarm);
+                messageBundle.putInt("INSERTED_ID",elementID);
+                queryHandlerMessage.setData(messageBundle); // put bundle into message
+                insertHandler.sendMessage(queryHandlerMessage);
+            }
+
+        };
+        Thread queryExecution=new Thread(alarmQuery); // put the query into bg thread and execute
+        queryExecution.start();
 
     }
 
     /**
      * this method loads all alarms in the background thread
      * */
-    public void GetAllAlarms(){
+    public void GetAllAlarmsAsync(){
         //handler for the query execute thread
         Handler QueryHandler= new Handler(){
             @Override
@@ -86,8 +125,11 @@ private Context alarmFragment_Context;
                 super.handleMessage(msg);
                 Bundle messageBundle = msg.getData();
                 List<Alarm> allAlarms=new Gson().fromJson(messageBundle.getString("ALL_ALARMS"), new TypeToken<List<Alarm>>(){}.getType());
-                //update the view model because the query has executedđ
+                //update the view model because the query has executed
                 mViewModel.getAlarmViewModelData().getValue().allAlarms=allAlarms;
+                allAlarms.forEach(alarm -> {
+                    addAlarmCard(alarm);
+                });
 
 
 
@@ -134,8 +176,12 @@ private Context alarmFragment_Context;
             cal.setTimeInMillis(alarmInstance.localStartTime);
             timezoneLocal.setText(new SimpleDateFormat("HH:mm").format(cal.getTime()));
 
-            Switch alarmSwitch = (Switch) card.findViewById(R.id.alarmCardSwitch);
-            alarmSwitch.setEnabled(alarmInstance.enabled);
+            TextView timezoneTime= (TextView)card.findViewById(R.id.alarmCardTimezoneTime);
+            cal.setTimeInMillis(alarmInstance.timeToStartInTimezone);
+            timezoneTime.setText(new SimpleDateFormat("HH:mm").format(cal.getTime()));
+
+            SwitchMaterial alarmSwitch = (SwitchMaterial) card.findViewById(R.id.alarmCardSwitch);
+            alarmSwitch.setChecked(alarmInstance.enabled);
 
 
         }
@@ -157,7 +203,7 @@ private Context alarmFragment_Context;
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: add remove from database (after building alarm database)
+
                 View toDelete=(View)(((View)v.getParent()).getParent());
                 Alarm alarmToDelete= mViewModel.getAlarmViewModelData().getValue().alarmDAO.getAlarmByID(toDelete.getId());
                 mViewModel.getAlarmViewModelData().getValue().alarmDAO.delete(alarmToDelete);

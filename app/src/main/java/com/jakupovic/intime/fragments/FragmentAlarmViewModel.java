@@ -26,6 +26,10 @@ import java.util.concurrent.ExecutorService;
 class alarmViewModelData{
     public AlarmDAO alarmDAO=MainActivity.database.alarmDAO();
     public List<Alarm> allAlarms;
+    /**
+     * id of the last added alarm
+     * */
+    public int alarmID;
 
 }
 
