@@ -79,8 +79,12 @@ private Context alarmFragment_Context;
         mViewModel.getAllAlarmsAsync(this::addAlarmCard); // call the getAllAlarms method and send a consumer from this class (addAlarmCard)
 
     }
-
-
+/**
+ * method used exclusively for testing, it gets the created instance of the alarm view model
+ * */
+public FragmentAlarmViewModel getmViewModel(){
+return mViewModel;
+}
 
 
     /**This method instantiates an alarm card containing data about alarms

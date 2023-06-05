@@ -58,7 +58,7 @@ public class FragmentAlarmViewModel extends ViewModel {
             public void run() {
 
                 //Background work
-                alarmViewModelData.getValue().alarmDAO.insert(alarm);
+                alarmViewModelData.getValue().alarmID=(int)alarmViewModelData.getValue().alarmDAO.insert(alarm);
 
 
             }
