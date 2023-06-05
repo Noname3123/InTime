@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,8 @@ import com.jakupovic.intime.alarmEditMenu.AlarmEditSettings;
 import com.jakupovic.intime.dataBase.Alarm;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class FragmentAlarm extends Fragment {
 
@@ -71,90 +74,14 @@ private Context alarmFragment_Context;
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(FragmentAlarmViewModel.class);
-       // insertAlarmAsync(new Alarm(Long.valueOf("1685980800000"),Long.valueOf("1685973600000"),"This is a title","This is an alarm Descr",true));
-       // insertAlarmAsync(new Alarm(Long.valueOf("1685980800000"),Long.valueOf("1685973600000"),"This is a 2nd title","This is an alarm Descr",true));
-        GetAllAlarmsAsync();
-
-    }
-    /**
-     * this method accesses the alarm DAO and inserts the alarm in the database in background
-     * @param alarm  - alarm to insert (class: alarm)
-     * @return  int - ID of the inserted item
-     * */
-    public void insertAlarmAsync(Alarm alarm){
-        Handler insertHandler = new Handler(){
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
-                Bundle messageBundle = msg.getData();
-                int ID=messageBundle.getInt("INSERTED_ID");
-                mViewModel.getAlarmViewModelData().getValue().alarmID=ID;
-
-
-
-            }
-        };
-
-        // executable which contains a query
-        Runnable alarmQuery = new Runnable() {
-            Message queryHandlerMessage=insertHandler.obtainMessage(); //get old message if there was one
-            Bundle messageBundle=new Bundle(); //create a new bundle for the message
-            List<Alarm> allAlarms;
-            @Override
-            public void run() {
-                int elementID=(int)mViewModel.getAlarmViewModelData().getValue().alarmDAO.insert(alarm);
-                messageBundle.putInt("INSERTED_ID",elementID);
-                queryHandlerMessage.setData(messageBundle); // put bundle into message
-                insertHandler.sendMessage(queryHandlerMessage);
-            }
-
-        };
-        Thread queryExecution=new Thread(alarmQuery); // put the query into bg thread and execute
-        queryExecution.start();
+       //TODO: remove this line insertAlarmAsync(new Alarm(Long.valueOf("1685980800000"),Long.valueOf("1685973600000"),"This is a title","This is an alarm Descr",true));
+       //TODO: remove this line insertAlarmAsync(new Alarm(Long.valueOf("1685980800000"),Long.valueOf("1685973600000"),"This is a 2nd title","This is an alarm Descr",true));
+        mViewModel.getAllAlarmsAsync(this::addAlarmCard); // call the getAllAlarms method and send a consumer from this class (addAlarmCard)
 
     }
 
-    /**
-     * this method loads all alarms in the background thread
-     * */
-    public void GetAllAlarmsAsync(){
-        //handler for the query execute thread
-        Handler QueryHandler= new Handler(){
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
-                Bundle messageBundle = msg.getData();
-                List<Alarm> allAlarms=new Gson().fromJson(messageBundle.getString("ALL_ALARMS"), new TypeToken<List<Alarm>>(){}.getType());
-                //update the view model because the query has executed
-                mViewModel.getAlarmViewModelData().getValue().allAlarms=allAlarms;
-                allAlarms.forEach(alarm -> {
-                    addAlarmCard(alarm);
-                });
 
 
-
-            }
-        };
-
-        // executable which contains a query
-        Runnable alarmQuery = new Runnable() {
-            Message queryHandlerMessage=QueryHandler.obtainMessage(); //get old message if there was one
-            Bundle messageBundle=new Bundle(); //create a new bundle for the message
-            List<Alarm> allAlarms;
-            @Override
-            public void run() {
-                allAlarms=MainActivity.database.alarmDAO().getAll();
-                messageBundle.putString("ALL_ALARMS",new Gson().toJson(allAlarms)); // turn List<> into JSON (string) and add it as a message to handler
-                queryHandlerMessage.setData(messageBundle); // put bundle into message
-                QueryHandler.sendMessage(queryHandlerMessage);
-            }
-
-        };
-        Thread queryExecution=new Thread(alarmQuery); // put the query into bg thread and execute
-        queryExecution.start();
-
-
-    }
 
     /**This method instantiates an alarm card containing data about alarms
      * @param alarmInstance - instance of entity from database (class: Alarm)
@@ -205,8 +132,8 @@ private Context alarmFragment_Context;
             public void onClick(View v) {
 
                 View toDelete=(View)(((View)v.getParent()).getParent());
-                Alarm alarmToDelete= mViewModel.getAlarmViewModelData().getValue().alarmDAO.getAlarmByID(toDelete.getId());
-                mViewModel.getAlarmViewModelData().getValue().alarmDAO.delete(alarmToDelete);
+                mViewModel.deleteAlarmInstance(toDelete.getId());
+
                 alarmCardContainer.removeView((View)(((View)v.getParent()).getParent()));
             }
 
