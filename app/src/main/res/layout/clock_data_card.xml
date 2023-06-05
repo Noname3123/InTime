@@ -17,7 +17,7 @@
                 android:id="@+id/buttonEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/ClockTimezone"
+                android:layout_below="@id/AlarmCardTItle"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginStart="10dp"
@@ -29,8 +29,8 @@
                 android:id="@+id/buttonDelete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/ClockTimezone"
-                android:layout_alignEnd="@id/ClockTimezone"
+                android:layout_below="@id/AlarmCardTItle"
+                android:layout_alignEnd="@id/AlarmCardTItle"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginTop="87dp"
@@ -40,7 +40,7 @@
                 android:textSize="13sp" />
 
             <TextView
-                android:id="@+id/ClockTimezone"
+                android:id="@+id/AlarmCardTItle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -51,7 +51,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/TimezoneLocalTime"
+                android:id="@+id/AlarmCardTimezoneLocalTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 

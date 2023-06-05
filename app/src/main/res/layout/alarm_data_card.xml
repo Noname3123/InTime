@@ -34,12 +34,12 @@
                 android:text="@string/AlarmDelete"
                 android:layout_alignEnd="@id/buttonEdit"
                 android:textSize="13sp"
-                android:layout_below="@id/alarmSwitch"
+                android:layout_below="@id/alarmCardSwitch"
                 android:layout_marginEnd="10dp"
                 android:layout_marginTop="8dp"/>
 
             <TextView
-                android:id="@+id/ClockTimezone"
+                android:id="@+id/AlarmCardTItle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -50,7 +50,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/TimezoneLocalTime"
+                android:id="@+id/AlarmCardTimezoneLocalTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -64,15 +64,15 @@
                 android:layout_width="52dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="5dp"
-                android:layout_below="@+id/ClockTimezone"
+                android:layout_below="@+id/AlarmCardTItle"
                 android:layout_centerVertical="true"
                 android:contentDescription="@string/AlarmIcon"
                 android:src="@android:drawable/ic_lock_idle_alarm"
                  />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/alarmSwitch"
-                android:layout_alignEnd="@id/TimezoneLocalTime"
+                android:id="@+id/alarmCardSwitch"
+                android:layout_alignEnd="@id/AlarmCardTimezoneLocalTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
