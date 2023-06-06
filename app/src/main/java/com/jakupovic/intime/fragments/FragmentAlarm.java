@@ -13,26 +13,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.jakupovic.intime.R;
 import com.jakupovic.intime.alarmEditMenu.AlarmEditSettings;
 import com.jakupovic.intime.dataBase.Alarm;
 
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class FragmentAlarm extends Fragment {
 
@@ -76,16 +68,22 @@ private Context alarmFragment_Context;
         mViewModel = new ViewModelProvider(this).get(FragmentAlarmViewModel.class);
        //TODO: remove this line insertAlarmAsync(new Alarm(Long.valueOf("1685980800000"),Long.valueOf("1685973600000"),"This is a title","This is an alarm Descr",true));
        //TODO: remove this line insertAlarmAsync(new Alarm(Long.valueOf("1685980800000"),Long.valueOf("1685973600000"),"This is a 2nd title","This is an alarm Descr",true));
-        mViewModel.getAllAlarmsAsync(this::addAlarmCard); // call the getAllAlarms method and send a consumer from this class (addAlarmCard)
+
 
     }
-/**
- * method used exclusively for testing, it gets the created instance of the alarm view model
- * */
-public FragmentAlarmViewModel getmViewModel(){
-return mViewModel;
-}
 
+/**
+ * method called when onResume event happens( such as fragment temporarily closes)
+ * */
+@Override
+public void onResume(){
+        super.onResume();
+        if(alarmCardContainer.getChildCount()>0){
+            alarmCardContainer.removeAllViews();
+        }
+    mViewModel.getAllAlarmsAsync(this::addAlarmCard); // call the getAllAlarms method and send a consumer from this class (addAlarmCard)
+
+}
 
     /**This method instantiates an alarm card containing data about alarms
      * @param alarmInstance - instance of entity from database (class: Alarm)
@@ -142,6 +140,21 @@ return mViewModel;
             }
 
         });
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CardView card=(CardView)(((View)v.getParent()).getParent());
+                Future toExecute=mViewModel.getAlarmByID( card.getId());
+                while(toExecute.isDone()==false){
+                    continue; //wait while the getbyid method thread is finished
+                }
+                Intent intent=new Intent(alarmFragment_Context, AlarmEditSettings.class); //gets the intent for which the new activity/window will open
+                intent.putExtra("ALARM_TO_EDIT",mViewModel.getAlarmViewModelData().getValue().alarmInstance);
+                startActivity(intent); //create a new window which edits the alarm settings
+
+            }
+        });
     }
+    //TODO: add logic for registering/unregistering alarms with the Android OS alarm system
 }
 

@@ -6,11 +6,14 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
+import java.io.Serializable;
+
 /**
  * this class represents entity for clocks and stores clock data in DB
  * */
 @Entity
-public class Clock {
+public class Clock implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     public int id;

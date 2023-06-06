@@ -17,9 +17,11 @@ import androidx.work.Worker;
 import com.jakupovic.intime.dataBase.Alarm;
 import com.jakupovic.intime.dataBase.dbDAO.AlarmDAO;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -29,15 +31,15 @@ import java.util.function.Function;
  * */
 class alarmViewModelData{
     public AlarmDAO alarmDAO=MainActivity.database.alarmDAO();
-    public List<Alarm> allAlarms;
+    //public List<Alarm> allAlarms;
     /**
-     * id of the last added alarm
+     * instance of the alarm gotten by ID query
      * */
-    public int alarmID;
+    public Alarm alarmInstance;
 
 }
 
-public class FragmentAlarmViewModel extends ViewModel {
+public class FragmentAlarmViewModel extends ViewModel implements Serializable {
 
     private  final MutableLiveData<alarmViewModelData> alarmViewModelData= new MutableLiveData(new alarmViewModelData());
     /**
@@ -45,26 +47,7 @@ public class FragmentAlarmViewModel extends ViewModel {
      * */
     public LiveData<alarmViewModelData> getAlarmViewModelData() {return alarmViewModelData;}
 
-    /**
-     * this method accesses the alarm DAO and inserts the alarm in the database in background
-     * @param alarm  - alarm to insert (class: alarm)
-     * */
-    public void insertAlarmAsync(Alarm alarm){
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
 
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-
-                //Background work
-                alarmViewModelData.getValue().alarmID=(int)alarmViewModelData.getValue().alarmDAO.insert(alarm);
-
-
-            }
-        });
-
-    }
 
     /**
      * this method loads all alarms in the background thread
@@ -97,7 +80,7 @@ public class FragmentAlarmViewModel extends ViewModel {
     }
     /**
      * this method deletes an alarm from database
-     * @param idOfAlarmToDelete - int representing the key of the database entry
+     * @param idOfAlarmToDelete - int representing the key of the alarm in database entry
      * @return void
      * */
     public void deleteAlarmInstance(int idOfAlarmToDelete){
@@ -113,12 +96,31 @@ public class FragmentAlarmViewModel extends ViewModel {
                 Alarm alarmToDelete= alarmViewModelData.getValue().alarmDAO.getAlarmByID(idOfAlarmToDelete);
                 alarmViewModelData.getValue().alarmDAO.delete(alarmToDelete);
 
-               // handler.post(new Runnable() {
-                 //   @Override
-                   // public void run() {
+            }
+        });
 
-                   // }
-                //});
+    }
+
+    /**
+     * this method gets an alarm from database by its ID
+     * @param idOfAlarm - int representing the key of the alarm in database entry
+     * @return Future - object which represents the thread execution state
+     * */
+    public Future getAlarmByID(int idOfAlarm){
+        //TODO: insert method for "unregistering" a currently active alarm
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+        return executor.submit(new Runnable() {
+            @Override
+            public void run() {
+
+                //Background work
+
+                    alarmViewModelData.getValue().alarmInstance=alarmViewModelData.getValue().alarmDAO.getAlarmByID(idOfAlarm);
+
+
+
             }
         });
 
