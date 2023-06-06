@@ -1,6 +1,7 @@
 package com.jakupovic.intime.alarmEditMenu;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.content.Intent;
 import android.media.Image;
@@ -72,6 +73,10 @@ public class AlarmEditSettings extends AppCompatActivity {
         if(recievedAlarm!=null){
             populateWithData();
         }
+        //NOTE: this is used for testing purposes, database usually isnt given by intent
+        if(intent.getBooleanExtra("THIS_IS_TEST",false)==true){
+            inTimeDataBase= Room.inMemoryDatabaseBuilder(getApplicationContext(), InTimeDataBase.class).allowMainThreadQueries().build();
+        }
 
     }
     /**this method is called when back button is pressed and it closes the activity. It takes view as parameter
@@ -81,7 +86,12 @@ public class AlarmEditSettings extends AppCompatActivity {
     void BackButtonCLick(View v){
         finish(); //finish the current activity
     }
-
+/**
+ * this method gets the database in this activity, this method is used during testing
+ * */
+    public InTimeDataBase getRoomDatabase(){
+        return inTimeDataBase;
+    }
     /**
      * this method returns a void and takes no params, it "populates" the activity with the alarm data gotten from the database if edit button was pressed
      * */
@@ -110,25 +120,39 @@ public class AlarmEditSettings extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"Check your title and description fields before saving alarm!",Toast.LENGTH_SHORT).show();
             return;
         }
-        Alarm toInsert= new Alarm(calendar.getTimeInMillis(),calendar.getTimeInMillis(),alarmTitleTextView.getText().toString(),alarmDescTextView.getText().toString(),timeZoneSelector.getSelectedItem().toString(),alarmSwitch.isChecked()); //TODO: for the second calendar do recalculations into local timezone, NOTE: timeZoneSelector will select object of type clock which contain timezone IDs - which will be added to the alarm info
-        insertAlarmAsync(toInsert);
-        finish();
+        try {
+            Alarm toInsert = new Alarm(recievedAlarm.alarmID,calendar.getTimeInMillis(), calendar.getTimeInMillis(), alarmTitleTextView.getText().toString(), alarmDescTextView.getText().toString(), timeZoneSelector.getSelectedItem().toString(), alarmSwitch.isChecked()); //TODO: for the second calendar do recalculations into local timezone, NOTE: timeZoneSelector will select object of type clock which contain timezone IDs - which will be added to the alarm info
+            insertAlarmAsync(toInsert);
+        }
+        catch (Exception e){
+            Alarm toInsert = new Alarm(calendar.getTimeInMillis(), calendar.getTimeInMillis(), alarmTitleTextView.getText().toString(), alarmDescTextView.getText().toString(), timeZoneSelector.getSelectedItem().toString(), alarmSwitch.isChecked()); //TODO: for the second calendar do recalculations into local timezone, NOTE: timeZoneSelector will select object of type clock which contain timezone IDs - which will be added to the alarm info
+            insertAlarmAsync(toInsert);
+        } finally {
+            finish();
+        }
+
+
     }
 
     /**
-     * this method accesses the alarm DAO and inserts the alarm in the database in background
-     * @param alarm  - alarm to insert (class: alarm)
+     * this method accesses the alarm DAO and inserts or updates the alarm in the database in background, depending on whether the recievedAlarm variable of this class is null or not
+     * @param alarm  - alarm to insert (class: Alarm)
      * */
     public void insertAlarmAsync(Alarm alarm){
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
+
 
         executor.execute(new Runnable() {
             @Override
             public void run() {
 
                 //Background work
-                inTimeDataBase.alarmDAO().insert(alarm);
+               if(recievedAlarm==null) {
+                   inTimeDataBase.alarmDAO().insert(alarm);
+               }
+               else{
+                   inTimeDataBase.alarmDAO().updateAlarm(alarm);
+               }
 
 
             }

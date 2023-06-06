@@ -16,7 +16,7 @@ public class Alarm implements Serializable {
     @PrimaryKey (autoGenerate = true)
     public int alarmID;
     /**
-     * local start time (bottom of alarm card), represents the actual time the alarm will activate in DEFINED timezone
+     * start time (center of alarm card), represents the actual time the alarm will activate in DEFINED/SELECTED timezone
      * */
     @ColumnInfo(name= "time zone time")
     /**
