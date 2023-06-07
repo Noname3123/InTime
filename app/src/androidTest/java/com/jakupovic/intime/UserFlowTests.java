@@ -111,6 +111,7 @@ public class UserFlowTests {
                 assertEquals(cal.get(Calendar.MINUTE),minutes);
                 assertEquals(selectedTimezoneText,alarm.timeZoneID);
                 assertEquals(switchClicked,alarm.enabled);
+                activity.finish(); //finish the activity after the db inserted test is done
             });
 
         });

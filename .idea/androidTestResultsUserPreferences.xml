@@ -70,6 +70,21 @@
             </AndroidTestResultsTableState>
           </value>
         </entry>
+        <entry key="-348687336">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Nexus_One_API_30" value="120" />
+                  <entry key="Pixel_6_Pro_API_27" value="120" />
+                  <entry key="Pixel_6_Pro_API_33" value="120" />
+                  <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="145082767">
           <value>
             <AndroidTestResultsTableState>
@@ -168,7 +183,9 @@
               <option name="preferredColumnWidths">
                 <map>
                   <entry key="Duration" value="90" />
+                  <entry key="Nexus_One_API_30" value="120" />
                   <entry key="Pixel_6_Pro_API_25" value="120" />
+                  <entry key="Pixel_6_Pro_API_27" value="120" />
                   <entry key="Pixel_6_Pro_API_33" value="120" />
                   <entry key="Tests" value="360" />
                 </map>
@@ -182,6 +199,21 @@
               <option name="preferredColumnWidths">
                 <map>
                   <entry key="Duration" value="90" />
+                  <entry key="Pixel_6_Pro_API_33" value="120" />
+                  <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="1805139561">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Nexus_One_API_30" value="120" />
+                  <entry key="Pixel_6_Pro_API_27" value="120" />
                   <entry key="Pixel_6_Pro_API_33" value="120" />
                   <entry key="Tests" value="360" />
                 </map>

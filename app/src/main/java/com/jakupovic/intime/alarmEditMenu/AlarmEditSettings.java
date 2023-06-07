@@ -73,7 +73,7 @@ public class AlarmEditSettings extends AppCompatActivity {
         if(recievedAlarm!=null){
             populateWithData();
         }
-        //NOTE: this is used for testing purposes, database usually isnt given by intent
+        //NOTE: this is used for testing purposes, database usually isnt determined by intent
         if(intent.getBooleanExtra("THIS_IS_TEST",false)==true){
             inTimeDataBase= Room.inMemoryDatabaseBuilder(getApplicationContext(), InTimeDataBase.class).allowMainThreadQueries().build();
         }
@@ -128,7 +128,11 @@ public class AlarmEditSettings extends AppCompatActivity {
             Alarm toInsert = new Alarm(calendar.getTimeInMillis(), calendar.getTimeInMillis(), alarmTitleTextView.getText().toString(), alarmDescTextView.getText().toString(), timeZoneSelector.getSelectedItem().toString(), alarmSwitch.isChecked()); //TODO: for the second calendar do recalculations into local timezone, NOTE: timeZoneSelector will select object of type clock which contain timezone IDs - which will be added to the alarm info
             insertAlarmAsync(toInsert);
         } finally {
+            // if activity isnt in a test
+            if(getIntent().getBooleanExtra("THIS_IS_TEST",false)==false)
+            {
             finish();
+            }
         }
 
 
