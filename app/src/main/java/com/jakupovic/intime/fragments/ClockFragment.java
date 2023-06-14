@@ -3,6 +3,8 @@ package com.jakupovic.intime.fragments;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,7 +18,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.jakupovic.intime.ClockEditMenu.ClockEditActivity;
 import com.jakupovic.intime.R;
+import com.jakupovic.intime.dataBase.Clock;
 import com.jakupovic.intime.interfaces.HandlerManager;
 
 import java.text.DateFormat;
@@ -34,6 +38,7 @@ public class ClockFragment extends Fragment implements HandlerManager {
 
     private Button addClockEntryBTN;
 
+    private Context clockFragmentContext;
     public static ClockFragment newInstance() {
         return new ClockFragment();
     }
@@ -45,12 +50,16 @@ public class ClockFragment extends Fragment implements HandlerManager {
         localClock=fragment.findViewById(R.id.ClockLocalTime);
         clockCardContainer= (ViewGroup) fragment.findViewById(R.id.ClockCardList);
         addClockEntryBTN=fragment.findViewById(R.id.buttonAddClock);
+        clockFragmentContext=fragment.getContext();
 
         //register add btn funcs
         addClockEntryBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addClockCard();
+
+                //addClockCard(); TODO: remove this line
+                Intent intent=new Intent(clockFragmentContext, ClockEditActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -92,9 +101,9 @@ public class ClockFragment extends Fragment implements HandlerManager {
  * @return void
  * */
     public void addClockCard() {
-        //TODO: this func will take a parameter which represents clock timezone data, and will instantiate a card instance in the scroll view, id of the created card must be equal to the id of the alarm entry in the DB
+        //TODO: this func will take a parameter which represents clock timezone data, and will instantiate a card instance in the scroll view, id of the created card must be equal to the id of the clock entry in the DB
 
-        //inflate a card view with a context, from xml: alarm_data_card and without a root/parent
+        //inflate a card view with a context, from xml: clock_data_card and without a root/parent
         CardView card = (CardView) View.inflate(this.getContext(), R.layout.clock_data_card, null);
         card.findViewById(R.id.buttonDelete).setOnClickListener(new View.OnClickListener() {
             @Override

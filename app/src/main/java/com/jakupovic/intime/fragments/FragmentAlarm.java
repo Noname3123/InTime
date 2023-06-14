@@ -155,6 +155,6 @@ public void onResume(){
             }
         });
     }
-    //TODO: add logic for registering/unregistering alarms with the Android OS alarm system
+    //TODO: add logic for registering/unregistering alarms with the Android OS alarm system - the logic will be implemented in the androidFragment view model
 }
 

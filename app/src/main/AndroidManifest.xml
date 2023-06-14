@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" package="com.jakupovic.intime">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.jakupovic.intime">
 
     <application
         android:allowBackup="true"
@@ -11,9 +12,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.InTime"
         tools:targetApi="31">
-        <!--activity
+        <activity
+            android:name=".ClockEditActivity"
+            android:exported="false" />
+        <!--
+        activity
             android:name=".alarmEditMenu.AlarmEditSettings"
-            android:exported="false" /-->
+            android:exported="false" /
+        -->
         <activity
             android:name=".alarmEditMenu.AlarmEditSettings"
             android:exported="false"
