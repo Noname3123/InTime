@@ -25,6 +25,11 @@ import com.jakupovic.intime.dataBase.InTimeDataBase;
 import com.jakupovic.intime.fragments.MainActivity;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -124,23 +129,31 @@ public class AlarmEditSettings extends AppCompatActivity {
      * @return void
      * */
     void SaveButtonClick(View v){
-        Calendar calendar=Calendar.getInstance(TimeZone.getTimeZone(listOfUserDefinedClocks.get(timeZoneSelector.getSelectedItemPosition()).timeZone)); //TODO: instantiate this calendar in the selected timezone, and then change the calendar into local timezone later
-        calendar.set(Calendar.HOUR_OF_DAY,timePicker.getHour());
-        calendar.set(Calendar.MINUTE,timePicker.getMinute());
-        ZonedDateTime timeInTimeZone= ZonedDateTime.ofInstant(Instant.ofEpochMilli(calendar.getTimeInMillis()), ZoneId.of(listOfUserDefinedClocks.get(timeZoneSelector.getSelectedItemPosition()).timeZone));
-        long timeOfActivationInTimezone=calendar.getTimeInMillis();
-//TODO: fix conversion between local and user defined time zone
-        long localStartTime= calendar.getTimeInMillis();
+
+        //if default timezone selected (meaning local timezone)
+        if(listOfUserDefinedClocks.get(timeZoneSelector.getSelectedItemPosition()).timeZone=="timezone")
+        {
+            listOfUserDefinedClocks.get(timeZoneSelector.getSelectedItemPosition()).timeZone=TimeZone.getDefault().getID();
+        }
+
+        //get current date and time as selected by time picker
+        LocalDate date= LocalDate.now();
+        LocalTime time= LocalTime.of(timePicker.getHour(), timePicker.getMinute());
+
+        //calculate local activation time when the selected time comes in the selected timezone and calculate time which would be in the selected timezone
+        ZonedDateTime localStartTime= ZonedDateTime.of(date,time,ZoneId.of(listOfUserDefinedClocks.get(timeZoneSelector.getSelectedItemPosition()).timeZone));
+        ZonedDateTime timeInTimeZone= localStartTime.withZoneSameLocal(TimeZone.getDefault().toZoneId());
+
         if(alarmTitleTextView.getText().toString().length()==0 || alarmDescTextView.getText().toString().length()==0){
             Toast.makeText(getApplicationContext(),"Check your title and description fields before saving alarm!",Toast.LENGTH_SHORT).show();
             return;
         }
         try {
-            Alarm toInsert = new Alarm(recievedAlarm.alarmID,timeInTimeZone.toInstant().toEpochMilli(),localStartTime , alarmTitleTextView.getText().toString(), alarmDescTextView.getText().toString(), timeZoneSelector.getSelectedItem().toString(), alarmSwitch.isChecked()); //TODO: for the second calendar do recalculations into local timezone, NOTE: timeZoneSelector will select object of type clock which contain timezone IDs - which will be added to the alarm info
+            Alarm toInsert = new Alarm(recievedAlarm.alarmID,timeInTimeZone.toInstant().toEpochMilli(),localStartTime.toInstant().toEpochMilli() , alarmTitleTextView.getText().toString(), alarmDescTextView.getText().toString(), timeZoneSelector.getSelectedItem().toString(), alarmSwitch.isChecked()); //TODO: for the second calendar do recalculations into local timezone, NOTE: timeZoneSelector will select object of type clock which contain timezone IDs - which will be added to the alarm info
             insertAlarmAsync(toInsert);
         }
         catch (Exception e){
-            Alarm toInsert = new Alarm(timeInTimeZone.toInstant().toEpochMilli(), localStartTime, alarmTitleTextView.getText().toString(), alarmDescTextView.getText().toString(), timeZoneSelector.getSelectedItem().toString(), alarmSwitch.isChecked()); //TODO: for the second calendar do recalculations into local timezone, NOTE: timeZoneSelector will select object of type clock which contain timezone IDs - which will be added to the alarm info
+            Alarm toInsert = new Alarm(timeInTimeZone.toInstant().toEpochMilli(), localStartTime.toInstant().toEpochMilli(), alarmTitleTextView.getText().toString(), alarmDescTextView.getText().toString(), timeZoneSelector.getSelectedItem().toString(), alarmSwitch.isChecked()); //TODO: for the second calendar do recalculations into local timezone, NOTE: timeZoneSelector will select object of type clock which contain timezone IDs - which will be added to the alarm info
             insertAlarmAsync(toInsert);
         } finally {
             // if activity isnt in a test
@@ -179,12 +192,5 @@ public class AlarmEditSettings extends AppCompatActivity {
 
     }
 
-    /**
-     * this method is called when the activity closes itself, it clears the list of user created clocks
-     * */
-@Override
-public void onDestroy(){
-        super.onDestroy();
-}
-    //TODO: fix the user defined clocks instance getting larger every time the add alarm button is clicked
+
 }

@@ -144,6 +144,7 @@ public class FragmentAlarmViewModel extends ViewModel implements Serializable {
             public void run() {
 
                 //Background work
+                alarmViewModelData.getValue().allClockInstances.clear();
                 alarmViewModelData.getValue().allClockInstances.add(new Clock("Default", "timezone")); //add entry for default timezone
                 alarmViewModelData.getValue().allClockInstances.addAll(MainActivity.database.clockDAO().getAll());
 
