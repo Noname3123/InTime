@@ -120,7 +120,13 @@ public class AlarmEditSettings extends AppCompatActivity {
        cal.setTimeInMillis(recievedAlarm.timeToStartInTimezone);
        timePicker.setHour(cal.get(Calendar.HOUR_OF_DAY));
        timePicker.setMinute(cal.get(Calendar.MINUTE));
-       timeZoneSelector.setSelection(((ArrayAdapter)timeZoneSelector.getAdapter()).getPosition(recievedAlarm.timeZoneID));
+       listOfUserDefinedClocks.forEach(clock -> {
+           if(clock.toString().contains(recievedAlarm.timeZoneID)){
+               timeZoneSelector.setSelection(((ArrayAdapter)timeZoneSelector.getAdapter()).getPosition(clock));
+               return;
+           }
+       });
+
     }
 
     /**
@@ -131,7 +137,7 @@ public class AlarmEditSettings extends AppCompatActivity {
     void SaveButtonClick(View v){
 
         //if default timezone selected (meaning local timezone)
-        if(listOfUserDefinedClocks.get(timeZoneSelector.getSelectedItemPosition()).timeZone=="timezone")
+        if(timeZoneSelector.getSelectedItemPosition()==0)
         {
             listOfUserDefinedClocks.get(timeZoneSelector.getSelectedItemPosition()).timeZone=TimeZone.getDefault().getID();
         }
