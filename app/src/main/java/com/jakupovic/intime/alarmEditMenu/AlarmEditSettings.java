@@ -50,7 +50,7 @@ public class AlarmEditSettings extends AppCompatActivity {
 
     private Alarm recievedAlarm;
 
-    private ArrayList<Clock> listOfUserDefinedClocks;
+    private ArrayList<Clock> listOfUserDefinedClocks=new ArrayList<>();
 
     TimePicker timePicker;
     @Override
@@ -84,15 +84,27 @@ public class AlarmEditSettings extends AppCompatActivity {
         });
         recievedAlarm=(Alarm) intent.getSerializableExtra("ALARM_TO_EDIT");
         listOfUserDefinedClocks= (ArrayList<Clock>) intent.getSerializableExtra("LIST_OF_CLOCKS");
-        if(listOfUserDefinedClocks.stream().count()>0){
-            timeZoneSelector.setAdapter(new ArrayAdapter<Clock>(this, android.R.layout.simple_spinner_dropdown_item, listOfUserDefinedClocks));
+        //incase it isnt in a test, load in the list of clocks
+        if(intent.getBooleanExtra("THIS_IS_TEST",false)==false){
+           try{
+               if(listOfUserDefinedClocks.stream().count()>0){
+                timeZoneSelector.setAdapter(new ArrayAdapter<Clock>(this, android.R.layout.simple_spinner_dropdown_item, listOfUserDefinedClocks));
+               }
+           }
+           catch(Exception e){
+               listOfUserDefinedClocks=new ArrayList<>();
+           }
         }
-        if(recievedAlarm!=null){
-            populateWithData();
-        }
+
         //NOTE: this is used for testing purposes, database usually isnt determined by intent
         if(intent.getBooleanExtra("THIS_IS_TEST",false)==true){
             inTimeDataBase= Room.inMemoryDatabaseBuilder(getApplicationContext(), InTimeDataBase.class).allowMainThreadQueries().build();
+            listOfUserDefinedClocks.add(new Clock("Default","timezone"));
+            timeZoneSelector.setAdapter(new ArrayAdapter<Clock>(this, android.R.layout.simple_spinner_dropdown_item, listOfUserDefinedClocks));
+
+        }
+        if(recievedAlarm!=null){
+            populateWithData();
         }
 
     }

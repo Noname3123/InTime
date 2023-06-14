@@ -19,6 +19,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.jakupovic.intime.alarmEditMenu.AlarmEditSettings;
 import com.jakupovic.intime.dataBase.Alarm;
+import com.jakupovic.intime.dataBase.Clock;
 import com.jakupovic.intime.dataBase.InTimeDataBase;
 
 import org.junit.Before;
@@ -26,6 +27,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -56,6 +58,10 @@ public class AlarmEditActivityTests {
         Alarm toInsert=new Alarm(Long.valueOf(2),Long.valueOf(1),"test alarm","This is a test alarm to be introduced in DB","someTimezone",true);
         Intent intent=new Intent(context, AlarmEditSettings.class);
         intent.putExtra("THIS_IS_TEST", true);
+        List<Clock> clocks = new ArrayList<Clock>();
+        clocks.add(new Clock("Default", "timezone"));
+        clocks.add(new Clock("Something","else"));
+        intent.putExtra("LIST_OF_CLOCKS", new ArrayList<Clock>(clocks));
         ActivityScenario<AlarmEditSettings> scenario = ActivityScenario.launch(intent); //launch activity with test intent, notifiying it that it is in a test environment
        scenario.onActivity(activity -> {
 
@@ -82,8 +88,12 @@ public class AlarmEditActivityTests {
     @Test
     public void TestEditAlarmFromDBFunction(){
         Context context= InstrumentationRegistry.getInstrumentation().getTargetContext();
-        Alarm toEdit=new Alarm(Long.valueOf("1686074093000"),Long.valueOf("1686074093000"),"test alarm","This is a test alarm to be introduced in DB","Tokyo Time (example)",true);
+        Alarm toEdit=new Alarm(Long.valueOf("1686074093000"),Long.valueOf("1686074093000"),"test alarm","This is a test alarm to be introduced in DB","Default (timezone)",true);
         Intent intent=new Intent(context, AlarmEditSettings.class);
+        List<Clock> clocks = new ArrayList<>();
+        clocks.add(new Clock("Default", "timezone"));
+        clocks.add(new Clock("Something","else"));
+        intent.putExtra("LIST_OF_CLOCKS", new ArrayList<Clock>(clocks));
         intent.putExtra("THIS_IS_TEST", true);
         intent.putExtra("ALARM_TO_EDIT", toEdit);
         ActivityScenario<AlarmEditSettings> scenario = ActivityScenario.launch(intent); //launch activity with test intent, notifiying it that it is in a test environment

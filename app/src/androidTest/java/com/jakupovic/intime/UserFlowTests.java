@@ -9,6 +9,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.StringContains.containsString;
@@ -33,6 +34,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.jakupovic.intime.alarmEditMenu.AlarmEditSettings;
 import com.jakupovic.intime.dataBase.Alarm;
+import com.jakupovic.intime.dataBase.Clock;
 import com.jakupovic.intime.dataBase.InTimeDataBase;
 
 import org.hamcrest.Matcher;
@@ -40,6 +42,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -62,13 +66,18 @@ public class UserFlowTests {
         String alarmDescr="Some Description";
         int hours=15;
         int minutes=25;
-        String selectedTimezoneText="Tokyo Time (example)";
+        String selectedTimezoneText="Default (Europe/Zagreb)";
+        Clock clockToClick=new Clock("Default","timezone");
         boolean switchClicked=true;
 
         //init of scenario
         Context context= InstrumentationRegistry.getInstrumentation().getTargetContext();
         Intent intent=new Intent(context, AlarmEditSettings.class);
         intent.putExtra("THIS_IS_TEST", true);
+        ArrayList<Clock> clocks = new ArrayList<Clock>();
+        clocks.add(new Clock("Other", "timezone"));
+        clocks.add(new Clock("Default", "Europe/Zagreb"));
+        intent.putExtra("LIST_OF_CLOCKS", clocks);
         ActivityScenario<AlarmEditSettings> scenario = ActivityScenario.launch(intent); //launch activity with test intent, notifiying it that it is in a test environment
 
         onView(withId(R.id.alarmTitleInput)).perform(typeText(alarmTitle));
@@ -92,7 +101,7 @@ public class UserFlowTests {
             }
         });
         onView(withId(R.id.TimezoneSelector)).perform(scrollTo()).perform(click());
-        onData(allOf(is(instanceOf(String.class)), is(selectedTimezoneText))).perform(click());
+        onData(anything()).atPosition(1).perform(click());
         onView(withId(R.id.TimezoneSelector)).check(matches(withSpinnerText(containsString(selectedTimezoneText))));
         onView(withId(R.id.switchEnabled)).perform(scrollTo()).perform(click());
         onView(withId(R.id.saveAlarm)).perform(click());
