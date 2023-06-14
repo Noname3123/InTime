@@ -20,13 +20,24 @@ import android.widget.TextView;
 
 import com.jakupovic.intime.ClockEditMenu.ClockEditActivity;
 import com.jakupovic.intime.R;
+import com.jakupovic.intime.alarmEditMenu.AlarmEditSettings;
 import com.jakupovic.intime.dataBase.Clock;
 import com.jakupovic.intime.interfaces.HandlerManager;
 
+import org.w3c.dom.Text;
+
 import java.text.DateFormat;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
+import java.util.concurrent.Future;
 
 public class ClockFragment extends Fragment implements HandlerManager {
 
@@ -39,6 +50,11 @@ public class ClockFragment extends Fragment implements HandlerManager {
     private Button addClockEntryBTN;
 
     private Context clockFragmentContext;
+
+    /**
+     * dictionary containing links between clock times and corresponding timezones of the clock card taken from database
+     * */
+    private HashMap<TextView,String> listOfForeignClockViews=new HashMap<>(); //a dictionary, every time zone id is linked to appropriate TextView (which is the key)
     public static ClockFragment newInstance() {
         return new ClockFragment();
     }
@@ -82,69 +98,82 @@ public class ClockFragment extends Fragment implements HandlerManager {
         super.onStop();
         HandlerManager.ResetHandler(mViewModel.getClockData().getValue().clockUpdateHandler);
     }
+
     @Override
-    //re-registers clock handler when the activity resumes itself
+    /**method called when onResume event happens( such as fragment temporarily closes),this method re-registers clock handler when the activity resumes itself*/
     public void onResume(){
         super.onResume();
         HandlerManager.RegisterHandlerFunction(mViewModel.getClockData().getValue().clockUpdateHandler, new Runnable() {
             @Override
             public void run() {
-                mViewModel.getClockData().getValue().time = new GregorianCalendar().getTime();
-                localClock.setText(calculateClockFormat());
+                mViewModel.getClockData().getValue().time = LocalDateTime.now();
+                localClock.setText(calculateClockFormat(mViewModel.getClockData().getValue().time));
+               //calculate timezone specific time for every clock instance inside DB
+                if(!listOfForeignClockViews.isEmpty()){
+                    listOfForeignClockViews.keySet().forEach(clock -> {
+                        clock.setText(calculateClockFormat(LocalDateTime.now(TimeZone.getTimeZone(listOfForeignClockViews.get(clock)).toZoneId())));
+                    });
+                }
 
                 mViewModel.getClockData().getValue().clockUpdateHandler.postDelayed(this, clockUpdateInterval);
             }
         });
+        if(clockCardContainer.getChildCount()>0){
+            clockCardContainer.removeAllViews();
+        }
+        mViewModel.getAllClocksAsync(this::addClockCard); // call the getAllAlarms method and send a consumer from this class (addAlarmCard)
+
     }
-/**this method adds a card representing a clock in a timezone
- * @params clock (entity database type)
+/**this method adds a card representing a clock in a timezone, it also adds a reference between clock card time entry and timezone for that clock card into the listOfForeignClockViews for
+ * the purpose of refreshing appropriate clocks
+ * @param clock - (entity database type)
  * @return void
  * */
-    public void addClockCard() {
-        //TODO: this func will take a parameter which represents clock timezone data, and will instantiate a card instance in the scroll view, id of the created card must be equal to the id of the clock entry in the DB
+    public void addClockCard(Clock clock) {
+
 
         //inflate a card view with a context, from xml: clock_data_card and without a root/parent
         CardView card = (CardView) View.inflate(this.getContext(), R.layout.clock_data_card, null);
+        card.setId(clock.id);
+        TextView clockCardTitle=(TextView) card.findViewById(R.id.clockCardTitle);
+        clockCardTitle.setText(clock.location);
+        TextView clockTimezoneID=(TextView)card.findViewById(R.id.ClockCardTimezoneName);
+        clockTimezoneID.setText(clock.timeZone);
         card.findViewById(R.id.buttonDelete).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clockCardContainer.removeView((View)(((View)v.getParent()).getParent()));
+                View viewToRemove=(View)(((View)v.getParent()).getParent());
+                mViewModel.deleteClockInstance(viewToRemove.getId());
+                clockCardContainer.removeView(viewToRemove);
             }
         });
+
+        card.findViewById(R.id.buttonEdit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View card=(View)(((View)v.getParent()).getParent());
+                Future toExecute=mViewModel.getClockByID( card.getId());
+                while(toExecute.isDone()==false){
+                    continue; //wait while the getbyid method thread is finished
+                }
+                Intent intent=new Intent(clockFragmentContext, ClockEditActivity.class); //gets the intent for which the new activity/window will open
+                intent.putExtra("CLOCK_TO_EDIT",mViewModel.getClockData().getValue().clockInstance);
+                startActivity(intent); //create a new window which edits the alarm settings
+
+            }
+        });
+        listOfForeignClockViews.put((TextView) card.findViewById(R.id.ClockCardTimezoneLocalTime),clock.timeZone); // add ref to the watch in the clock card and the corresponding timezone into the HashMap
         //adds a cardview to the container (linear layout)
         clockCardContainer.addView(card);
+
     }
-    /**this method takes the date object stored in clock view model and formats its time entry
-     * @params none
+    /**this generic method takes the date object stored in clock view model and formats its time entry
+     * @param time - LocalDateTime or ZonedDateTime which will be formatted into string
      * @return String
      * */
-    String calculateClockFormat(){
+    String calculateClockFormat(LocalDateTime time){
 
-        return DateFormat.getTimeInstance(DateFormat.DEFAULT, Locale.getDefault()).format(mViewModel.getClockData().getValue().time);
-    }
-
-    /**
-     * This method is responsible for checking time when the clock activity runs, it is called constantly, since the activity created in onCreate and it will call itself every clock update interval to update the clock
-     * @params
-     * @return void
-     * */
-    private void runClock(){
-
-
-        //Handler
-        final Handler handler=new Handler();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-
-
-                mViewModel.getClockData().getValue().time = new GregorianCalendar().getTime();
-                localClock.setText(calculateClockFormat());
-
-                handler.postDelayed(this, clockUpdateInterval);
-            }
-
-        });
+        return time.format(DateTimeFormatter.ofPattern("HH:mm",Locale.getDefault()));
     }
 
 }

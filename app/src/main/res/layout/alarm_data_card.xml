@@ -62,7 +62,7 @@
 
             <TextView
                 android:id="@+id/alarmCardTimezoneTime"
-                android:layout_width="wrap_content"
+                android:layout_width="80sp"
                 android:layout_height="wrap_content"
 
                 android:layout_below="@id/AlarmCardTimezoneLocalTime"
@@ -71,9 +71,9 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerInParent="false"
                 android:layout_centerHorizontal="true"
-                android:text="@string/AlarmTime"
+                android:text="@string/AlarmTimezoneTime"
                 android:textAlignment="center"
-                android:textSize="24sp"
+                android:textSize="14sp"
                 android:textStyle="italic" />
 
             <ImageView

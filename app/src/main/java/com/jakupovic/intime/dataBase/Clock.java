@@ -2,6 +2,7 @@ package com.jakupovic.intime.dataBase;
 
 import android.icu.util.TimeZone;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -46,5 +47,16 @@ public Clock(int id,String location, String timeZone){
      * */
     public Clock(String location, String timeZone){
         this(-1,location,timeZone);
+    }
+
+    /**
+     * override of the toString method which is called when Clock.toString() is called. It returns the location and timezone description as the name of clock instance
+     * @param
+     * @return String
+     * */
+    @NonNull
+    @Override
+    public String toString() {
+        return this.location + " ("+this.timeZone+")";
     }
 }

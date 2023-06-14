@@ -15,9 +15,11 @@ import androidx.work.WorkRequest;
 import androidx.work.Worker;
 
 import com.jakupovic.intime.dataBase.Alarm;
+import com.jakupovic.intime.dataBase.Clock;
 import com.jakupovic.intime.dataBase.dbDAO.AlarmDAO;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,6 +38,10 @@ class alarmViewModelData{
      * instance of the alarm gotten by ID query
      * */
     public Alarm alarmInstance;
+/**
+ * list of all clocks the user has created
+ * */
+    public List<Clock> allClockInstances=new ArrayList<Clock>();
 
 }
 
@@ -51,7 +57,7 @@ public class FragmentAlarmViewModel extends ViewModel implements Serializable {
 
     /**
      * this method loads all alarms in the background thread
-     * @param funcToExecOnInstance - Function<Alarm,Void> which will be called for every instance gotten by the query
+     * @param funcToExecOnInstance - Consumer<Alarm> which will be called for every instance gotten by the query
      * */
     public void getAllAlarmsAsync(Consumer<Alarm> funcToExecOnInstance){
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -124,6 +130,27 @@ public class FragmentAlarmViewModel extends ViewModel implements Serializable {
             }
         });
 
+    }
+    /**
+     * this method gets all all user created clocks from the DB so that they can be loaded into the alarm edit interface
+     * @param
+     * @return Future - object which represents the thread execution state
+     * */
+    public Future getAllUserCreatedClocks(){
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+        return executor.submit(new Runnable() {
+            @Override
+            public void run() {
+
+                //Background work
+                alarmViewModelData.getValue().allClockInstances.add(new Clock("Default", "timezone")); //add entry for default timezone
+                alarmViewModelData.getValue().allClockInstances.addAll(MainActivity.database.clockDAO().getAll());
+
+
+
+            }
+        });
     }
 
 

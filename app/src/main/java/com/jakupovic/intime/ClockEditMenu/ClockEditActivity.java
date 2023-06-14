@@ -99,7 +99,7 @@ public class ClockEditActivity extends AppCompatActivity {
      * */
     void populateWithData(){
         clockDescTextView.setText(recievedClock.location);
-        timeZoneSelector.setSelection(((ArrayAdapter)timeZoneSelector.getAdapter()).getPosition(recievedClock.timeZone));
+        timeZoneSelector.setText(recievedClock.timeZone);
     }
 
 

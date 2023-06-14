@@ -23,7 +23,9 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.jakupovic.intime.R;
 import com.jakupovic.intime.alarmEditMenu.AlarmEditSettings;
 import com.jakupovic.intime.dataBase.Alarm;
+import com.jakupovic.intime.dataBase.Clock;
 
+import java.util.ArrayList;
 import java.util.concurrent.Future;
 
 public class FragmentAlarm extends Fragment {
@@ -54,6 +56,8 @@ private Context alarmFragment_Context;
             public void onClick(View v) {
                 //addAlarmCard(); //TODO: replace with a more appropriate function (create/edit alarm activity)
                 Intent intent=new Intent(alarmFragment_Context, AlarmEditSettings.class); //gets the intent for which the new activity/window will open
+                waitForLoadListOfClocks();
+                intent.putExtra("LIST_OF_CLOCKS",new ArrayList<Clock>(mViewModel.getAlarmViewModelData().getValue().allClockInstances)); //send the list of all clock instances as arraylist<Clock>
                 startActivity(intent); //create a new window which edits the alarm settings
             }
         });
@@ -107,7 +111,7 @@ public void onResume(){
 
             TextView timezoneTime= (TextView)card.findViewById(R.id.alarmCardTimezoneTime);
             cal.setTimeInMillis(alarmInstance.timeToStartInTimezone);
-            timezoneTime.setText(new SimpleDateFormat("HH:mm").format(cal.getTime()));
+            timezoneTime.setText(timezoneTime.getText()+"\n"+new SimpleDateFormat("HH:mm").format(cal.getTime()));
 
             SwitchMaterial alarmSwitch = (SwitchMaterial) card.findViewById(R.id.alarmCardSwitch);
             alarmSwitch.setChecked(alarmInstance.enabled);
@@ -122,7 +126,7 @@ public void onResume(){
      * @return void
      * */
     public void registerAlarmCardButtons(CardView card){
-        //TODO: add event registers for other buttons (such as edit and enable switch)
+        //TODO: add event registers for enabled switch
         //get buttons
         Button editButton=card.findViewById(R.id.buttonEdit);
         Button enabledSwitch=card.findViewById(R.id.alarmCardSwitch);
@@ -150,10 +154,24 @@ public void onResume(){
                 }
                 Intent intent=new Intent(alarmFragment_Context, AlarmEditSettings.class); //gets the intent for which the new activity/window will open
                 intent.putExtra("ALARM_TO_EDIT",mViewModel.getAlarmViewModelData().getValue().alarmInstance);
+                waitForLoadListOfClocks();
+                intent.putExtra("LIST_OF_CLOCKS",new ArrayList<Clock>(mViewModel.getAlarmViewModelData().getValue().allClockInstances)); //send the list of all clock instances as arraylist<Clock>
                 startActivity(intent); //create a new window which edits the alarm settings
 
             }
         });
+    }
+    /**
+     * this method makes the main thread wait until all user created clocks are recieved from the database
+     * @param
+     * @return void
+     * */
+    void waitForLoadListOfClocks(){
+        Future toExecute= mViewModel.getAllUserCreatedClocks();
+        while(toExecute.isDone()==false){
+            continue;
+        }
+
     }
     //TODO: add logic for registering/unregistering alarms with the Android OS alarm system - the logic will be implemented in the androidFragment view model
 }
