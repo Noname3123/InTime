@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -21,10 +22,13 @@ import com.jakupovic.intime.dataBase.Clock;
 import com.jakupovic.intime.dataBase.InTimeDataBase;
 import com.jakupovic.intime.fragments.MainActivity;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import kotlin.collections.UArraySortingKt;
 
 public class ClockEditActivity extends AppCompatActivity {
 
@@ -32,8 +36,9 @@ public class ClockEditActivity extends AppCompatActivity {
     private Button saveBtn;
     private TextView clockDescTextView;
     private InTimeDataBase inTimeDataBase;
-    private Spinner timeZoneSelector;
+    private AutoCompleteTextView timeZoneSelector;
 
+    private String[] arrayOfAllTimeZoneIDs;
     private Clock recievedClock;
 
 
@@ -45,8 +50,9 @@ public class ClockEditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_clock_edit);
         backButton=(ImageButton) findViewById(R.id.BackButtonClockEditActivity);
         saveBtn=(Button) findViewById(R.id.saveClock);
-        timeZoneSelector=(Spinner) findViewById(R.id.ClockTimezoneSelector);
-        timeZoneSelector.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, TimeZone.getAvailableIDs())); //set the dropdown adapter of all timezones
+        timeZoneSelector=(AutoCompleteTextView) findViewById(R.id.AutoCompleteClockTimezoneSelector);
+        arrayOfAllTimeZoneIDs=TimeZone.getAvailableIDs();
+        timeZoneSelector.setAdapter(new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, arrayOfAllTimeZoneIDs)); //set the dropdown adapter of all timezones
         clockDescTextView=(TextView) findViewById(R.id.clockDescriptionInput);
         //register buttons
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -104,16 +110,16 @@ public class ClockEditActivity extends AppCompatActivity {
      * @return void
      * */
     void SaveButtonClick(View v){
-        if(clockDescTextView.getText().toString().length()==0){
-            Toast.makeText(getApplicationContext(),"Check your title and description fields before saving alarm!",Toast.LENGTH_SHORT).show();
+        if(clockDescTextView.getText().toString().length()==0 || Arrays.asList(arrayOfAllTimeZoneIDs).contains(timeZoneSelector.getText().toString())==false ){
+            Toast.makeText(getApplicationContext(),"Check your description and timezone fields before saving clock!",Toast.LENGTH_SHORT).show();
             return;
         }
         try {
-            Clock toInsert = new Clock(recievedClock.id,clockDescTextView.getText().toString(),timeZoneSelector.getSelectedItem().toString());
+            Clock toInsert = new Clock(recievedClock.id,clockDescTextView.getText().toString(),timeZoneSelector.getText().toString());
             insertClockAsync(toInsert);
         }
         catch (Exception e){
-            Clock toInsert = new Clock(clockDescTextView.getText().toString(),timeZoneSelector.getSelectedItem().toString());
+            Clock toInsert = new Clock(clockDescTextView.getText().toString(),timeZoneSelector.getText().toString());
             insertClockAsync(toInsert);
         } finally {
             // if activity isnt in a test

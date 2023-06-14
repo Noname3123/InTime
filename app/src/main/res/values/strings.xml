@@ -34,6 +34,7 @@
     <string name="ClockEditTitle">Create a new clock</string>
     <string name="ClockSaveButton">Save clock</string>
     <string name="ClockDescInputHint">Write clock description here</string>
+    <string name="ClockTimezoneAutocorrectSelect">Write location name here (but first begin with continent/ country name) to recieve timezone suggestion</string>
     <string-array name="SpinnerTimezone">
         <item> Default timezone (example) </item>
         <item> New York Time (example)</item>
