@@ -162,10 +162,7 @@ public class FragmentStopwatch extends Fragment implements HandlerManager {
             decideLapButtonVisibility(); }
 
     }
-    /**this method takes the View as an argument and is called when user clicks on reset button in the stopwatch
-     * @param view
-     * @return void
-     * */
+
     /**this method takes no params, it is called whenever user clicks the stopwatch start/ stop button and it is called on activity init
      * @param
      * @return void
@@ -179,6 +176,10 @@ public class FragmentStopwatch extends Fragment implements HandlerManager {
         }
 
     }
+    /**this method takes the View as an argument and is called when user clicks on reset button in the stopwatch
+     * @param view
+     * @return void
+     * */
     public void onClickReset(View view){
         mViewModel.getStopwatchState().getValue().running=false;
         mViewModel.getStopwatchState().getValue().seconds=0;

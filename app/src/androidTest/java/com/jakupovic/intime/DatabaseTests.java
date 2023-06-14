@@ -65,7 +65,7 @@ public class DatabaseTests {
      * @return void
      * */
     public void AddAlarm() throws Exception{
-        Alarm alarm=new Alarm(Long.valueOf(2),Long.valueOf(1),"test alarm","This is a test alarm to be introduced in DB",true);
+        Alarm alarm=new Alarm(Long.valueOf(2),Long.valueOf(1),"test alarm","This is a test alarm to be introduced in DB","someTimezone",true);
        //values written into database
        //alarm.alarmDesc="This is a test alarm to be introduced into DB";
         //alarm.alarmTitle="test alarm";
@@ -81,6 +81,7 @@ public class DatabaseTests {
             assertEquals(alarm.alarmDesc,queriedAlarm.alarmDesc);
             assertEquals(alarm.localStartTime,queriedAlarm.localStartTime);
             assertEquals(alarm.timeToStartInTimezone,queriedAlarm.timeToStartInTimezone);
+            assertEquals(alarm.timeZoneID,queriedAlarm.timeZoneID);
             assertEquals(alarm.enabled,queriedAlarm.enabled);
         });
 
@@ -93,12 +94,12 @@ public class DatabaseTests {
      * @return void
      * */
     public void UpdateAlarm() throws Exception{
-        Alarm alarm=new Alarm(Long.valueOf(2),Long.valueOf(1),"test alarm","This is a test alarm to be introduced in DB",true);
+        Alarm alarm=new Alarm(Long.valueOf(2),Long.valueOf(1),"test alarm","This is a test alarm to be introduced in DB","someTimezone",true);
         int insertedID = (int)alarmDAO.insert(alarm); //first insert the "original" version of alarm entry and get its ID
 
 
         //get inserted alarm
-        Alarm alarmModified=new Alarm(insertedID,Long.valueOf(2),Long.valueOf(5),"test alarm","This is ",false); //create a new alarm instance with ID modified for update
+        Alarm alarmModified=new Alarm(insertedID,Long.valueOf(2),Long.valueOf(5),"test alarm","This is ","someTimezone",false); //create a new alarm instance with ID modified for update
 
 
 
@@ -111,6 +112,7 @@ public class DatabaseTests {
             assertEquals(alarmModified.alarmDesc,updated.alarmDesc);
             assertEquals(alarmModified.localStartTime,updated.localStartTime);
             assertEquals(alarmModified.timeToStartInTimezone,updated.timeToStartInTimezone);
+            assertEquals(alarmModified.timeZoneID,updated.timeZoneID);
             assertEquals(alarmModified.enabled,updated.enabled);
 
 
@@ -119,7 +121,7 @@ public class DatabaseTests {
  * this method tests the get alarm by ID method
  * */@Test
     public void GetAlarmByID(){
-        Alarm alarm=new Alarm(Long.valueOf(2),Long.valueOf(1),"test alarm","This is a test alarm to be introduced in DB",true);
+        Alarm alarm=new Alarm(Long.valueOf(2),Long.valueOf(1),"test alarm","This is a test alarm to be introduced in DB","someTimezone",true);
         int insertedAlarmID=(int)alarmDAO.insert(alarm); //first insert the "original" version of alarm entry and get its ID
 
 
@@ -132,6 +134,7 @@ public class DatabaseTests {
         assertEquals(alarm.alarmDesc,alarmQueriedByID.alarmDesc);
         assertEquals(alarm.localStartTime,alarmQueriedByID.localStartTime);
         assertEquals(alarm.timeToStartInTimezone,alarmQueriedByID.timeToStartInTimezone);
+        assertEquals(alarm.timeZoneID,alarmQueriedByID.timeZoneID);
         assertEquals(alarm.enabled,alarmQueriedByID.enabled);
 
     }
@@ -140,7 +143,7 @@ public class DatabaseTests {
      * delete a created alarm from db
      * */@Test
     public void DeleteAlarmFromDB(){
-        Alarm alarm=new Alarm(Long.valueOf(2),Long.valueOf(1),"test alarm","This is a test alarm to be introduced in DB",true);
+        Alarm alarm=new Alarm(Long.valueOf(2),Long.valueOf(1),"test alarm","This is a test alarm to be introduced in DB","someTimezone",true);
         int insertedAlarmID=(int)alarmDAO.insert(alarm); //first insert the "original" version of alarm entry and then get its ID
 
 
@@ -241,3 +244,4 @@ public class DatabaseTests {
 
 
 }
+

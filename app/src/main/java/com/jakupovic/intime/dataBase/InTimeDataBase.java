@@ -6,6 +6,8 @@ import androidx.room.RoomDatabase;
 import com.jakupovic.intime.dataBase.dbDAO.AlarmDAO;
 import com.jakupovic.intime.dataBase.dbDAO.ClockDAO;
 
+import java.io.Serializable;
+
 /**
  * this abstract class represents the entire database of the InTime application, this is instantiated when InTime opens
  * */

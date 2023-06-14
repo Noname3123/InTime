@@ -9,6 +9,7 @@
     <string name="AlarmTitle1">TestAlarmName</string>
     <string name="AlarmIcon">IconOfAnAlarmClock</string>
     <string name="AlarmTime">12:00</string>
+    <string name="AlarmTimezoneTime">Time in target timezone:</string>
     <string name="AlarmSwitch">Enabled</string>
     <string name="AlarmEdit">Edit</string>
     <string name="AlarmDelete">Delete</string>
@@ -31,13 +32,10 @@
     <string name="ClockIcon">Icon of a custom timezone clock</string>
     <string name="ClockTimezoneName">New York Standard Time (example)</string>
     <string name="TimezoneLocalTime">00:00</string>
-    <string-array name="SpinnerTimezone">
-        <item> Default timezone (example) </item>
-        <item> New York Time (example)</item>
-        <item> Tokyo Time (example)</item>
-        <item> L. A. Time (example)</item>
-        <item> Chicago Time (example)</item>
-    </string-array>
+    <string name="ClockEditTitle">Create a new clock</string>
+    <string name="ClockSaveButton">Save clock</string>
+    <string name="ClockDescInputHint">Write clock description here</string>
+    <string name="ClockTimezoneAutocorrectSelect">Write location name here (but first begin with continent or country name) to recieve timezone suggestion</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

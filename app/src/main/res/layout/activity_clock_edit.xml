@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".alarmEditMenu.AlarmEditSettings">
+    tools:context=".ClockEditMenu.ClockEditActivity">
 
     <View
         android:id="@+id/view2"
@@ -17,10 +17,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/alarmEditTitle"
+        android:id="@+id/clockEditTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/AlarmEditTitle"
+        android:text="@string/ClockEditTitle"
         android:textAlignment="center"
         android:textSize="50sp"
         app:layout_constraintBottom_toBottomOf="@+id/view2"
@@ -34,7 +34,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/saveAlarm"
+        app:layout_constraintBottom_toTopOf="@+id/saveClock"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view2">
@@ -45,19 +45,19 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/AlarmNameTitle"
+                android:id="@+id/ClockTimezoneDescription"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Alarm Name"
+                android:text="Clock description"
                 android:textAlignment="center"
                 android:textSize="24sp" />
 
             <EditText
-                android:id="@+id/alarmTitleInput"
-                android:layout_width="wrap_content"
+                android:id="@+id/clockDescriptionInput"
+                android:layout_width="237dp"
                 android:layout_height="71dp"
                 android:ems="10"
-                android:hint="@string/alarmTitleInputFieldText"
+                android:hint="@string/ClockDescInputHint"
                 android:importantForAutofill="no"
                 android:inputType="textPersonName" />
 
@@ -67,62 +67,21 @@
                 android:layout_height="5dp"
                 android:background="?android:attr/listDivider" />
 
+
             <TextView
-                android:id="@+id/alarmDescTitle"
+                android:id="@+id/clockTimezoneTitle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Alarm Description"
+                android:text="Clock Timezone"
                 android:textAlignment="center"
                 android:textSize="24sp" />
 
-            <EditText
-                android:id="@+id/alarmDescInput"
-                android:layout_width="wrap_content"
-                android:layout_height="71dp"
-                android:ems="10"
-                android:hint="@string/alarmDescInputFieldText"
-                android:importantForAutofill="no"
-                android:inputType="textPersonName" />
-
-            <View
-                android:id="@+id/divider2"
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:background="?android:attr/listDivider" />
-            <TextView
-                android:id="@+id/alarmTimeTitle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Alarm Time"
-                android:textAlignment="center"
-                android:textSize="24sp" />
-
-
-            <TimePicker
-                android:id="@+id/AlarmTimePicker"
+            <AutoCompleteTextView
+                android:id="@+id/AutoCompleteClockTimezoneSelector"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:timePickerMode="spinner" />
-
-            <View
-                android:id="@+id/divider3"
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:background="?android:attr/listDivider" />
-
-            <TextView
-                android:id="@+id/alarmTimezone"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Alarm Timezone"
-                android:textAlignment="center"
-                android:textSize="24sp" />
-
-            <Spinner
-                android:id="@+id/TimezoneSelector"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp" />
+                android:completionThreshold="1"
+                android:hint="@string/ClockTimezoneAutocorrectSelect" />
 
             <View
                 android:id="@+id/divider4"
@@ -130,38 +89,18 @@
                 android:layout_height="5dp"
                 android:background="?android:attr/listDivider" />
 
-            <TextView
-                android:id="@+id/alarmActivity"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Alarm activity"
-                android:textAlignment="center"
-                android:textSize="24sp" />
-
-            <Switch
-                android:id="@+id/switchEnabled"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:text="@string/AlarmSwitch"
-                android:textSize="16sp" />
-
-            <View
-                android:id="@+id/divider5"
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:background="?android:attr/listDivider" />
         </LinearLayout>
     </ScrollView>
 
     <Button
-        android:id="@+id/saveAlarm"
+        android:id="@+id/saveClock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:text="@string/alarmSaveButton"
+        android:text="@string/ClockSaveButton"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -169,13 +108,13 @@
         app:layout_constraintTop_toBottomOf="@+id/scrollView3" />
 
     <ImageButton
-        android:id="@+id/AlarmEditMenuBackButton"
+        android:id="@+id/BackButtonClockEditActivity"
         android:layout_width="80dp"
         android:layout_height="88dp"
         android:layout_marginTop="32dp"
         android:backgroundTint="@android:color/transparent"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toTopOf="@+id/alarmEditTitle"
+        app:layout_constraintBottom_toTopOf="@+id/clockEditTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.044"
         app:layout_constraintStart_toStartOf="parent"

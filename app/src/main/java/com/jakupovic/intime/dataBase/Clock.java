@@ -2,15 +2,19 @@ package com.jakupovic.intime.dataBase;
 
 import android.icu.util.TimeZone;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
+import java.io.Serializable;
+
 /**
  * this class represents entity for clocks and stores clock data in DB
  * */
 @Entity
-public class Clock {
+public class Clock implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     public int id;
@@ -43,5 +47,16 @@ public Clock(int id,String location, String timeZone){
      * */
     public Clock(String location, String timeZone){
         this(-1,location,timeZone);
+    }
+
+    /**
+     * override of the toString method which is called when Clock.toString() is called. It returns the location and timezone description as the name of clock instance
+     * @param
+     * @return String
+     * */
+    @NonNull
+    @Override
+    public String toString() {
+        return this.location + " ("+this.timeZone+")";
     }
 }
