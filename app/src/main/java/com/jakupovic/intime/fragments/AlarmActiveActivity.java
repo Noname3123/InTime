@@ -128,8 +128,7 @@ public class AlarmActiveActivity extends AppCompatActivity {
         Intent AlarmServiceIntent =new Intent(getApplicationContext(),AlarmService.class);
         getApplicationContext().stopService(AlarmServiceIntent);
         //register alarm for tomorrow
-        AndroidOSAlarmManager.UnregisterAlarm(alarmReference, (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE),getApplicationContext());
-        AndroidOSAlarmManager.RegisterAlarm(alarmReference,(AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE),getApplicationContext());
+
     }
 /**
  * method takes an alarm and changes its active state in the DB to false and unregisters it from the alarm manager
@@ -137,6 +136,7 @@ public class AlarmActiveActivity extends AppCompatActivity {
  * */
     public void CancelAlarmAsync(Alarm alarm){
         ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
 
 
         executor.execute(new Runnable() {
@@ -147,7 +147,13 @@ public class AlarmActiveActivity extends AppCompatActivity {
 
 
                     database.alarmDAO().updateAlarm(alarm);
-                AndroidOSAlarmManager.UnregisterAlarm(alarm, (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE),getApplicationContext());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            AndroidOSAlarmManager.UnregisterAlarm(alarm, (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE),getApplicationContext());
+
+                        }
+                    });
 
 
 

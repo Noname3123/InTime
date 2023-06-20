@@ -30,7 +30,7 @@ public interface AndroidOSAlarmManager {
         intent.putExtra("ALARM_INSTANCE",alarm); // send the alarm instance which is registered
         Toast.makeText(context,toastNotifText,Toast.LENGTH_LONG).show();
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context,alarm.alarmID,intent,PendingIntent.FLAG_IMMUTABLE);
-        alarmMgr.setExact(AlarmManager.RTC_WAKEUP,alarm.localStartTime,alarmIntent);
+        alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,alarm.localStartTime,AlarmManager.INTERVAL_DAY,alarmIntent);
     }
     /**
      * this method unregisters the alarm from the OS
