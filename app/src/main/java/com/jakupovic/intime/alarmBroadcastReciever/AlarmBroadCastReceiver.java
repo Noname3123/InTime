@@ -17,21 +17,20 @@ import java.security.Provider;
  * the receiver of the Alarm
  * */
 public class AlarmBroadCastReceiver extends BroadcastReceiver {
-    private Alarm recievedInstance;
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
-       recievedInstance= (Alarm) intent.getSerializableExtra("ALARM_INSTANCE");
        startAlarmService(context,intent);
     }
     /**
      * this method starts the alarm service (and te alarm gets triggered)
      * @param context  - context of app
-     * @param intent - intent
+     * @param intent - intent which was sent by the alarm manager
      * */
     public void startAlarmService(Context context, Intent intent){
         Intent serviceIntent=new Intent(context,AlarmService.class);
-        serviceIntent.putExtra("ALARM_INSTANCE", recievedInstance);
+        serviceIntent.putExtra("ALARM_INSTANCE", (Alarm) intent.getSerializableExtra("ALARM_INSTANCE"));
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             context.startForegroundService(serviceIntent); // if new android (8.0+) with different service management
         }

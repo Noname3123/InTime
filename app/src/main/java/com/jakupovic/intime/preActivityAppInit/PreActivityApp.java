@@ -20,7 +20,7 @@ public class PreActivityApp extends Application {
     }
 
     /**
-     * this method creates an urgent notification channel for alarms before the rest of the app is executed - all notifications sent by the app will have a popup.
+     * this method creates an urgent notification channel for alarms before the rest of the app is executed - all notifications sent by the app will have a popup
      * */
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

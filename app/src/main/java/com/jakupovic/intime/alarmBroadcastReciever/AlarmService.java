@@ -21,6 +21,7 @@ import androidx.core.app.NotificationCompat;
 import com.jakupovic.intime.R;
 import com.jakupovic.intime.dataBase.Alarm;
 import com.jakupovic.intime.fragments.AlarmActiveActivity;
+import com.jakupovic.intime.preActivityAppInit.PreActivityApp;
 
 /**
  * this class represents an alarm service which will start the alarm notification and execute the alarm alert
@@ -31,6 +32,7 @@ public class AlarmService extends Service {
     //alarm alert vars
     private MediaPlayer mediaPlayer;
     private Vibrator vibrator;
+
 
 
     @Override
@@ -49,8 +51,11 @@ public class AlarmService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
         alarmInstance=(Alarm) intent.getSerializableExtra("ALARM_INSTANCE");
+        //set the currently triggered alarm
+
+
         Intent notificationIntent = new Intent(this, AlarmActiveActivity.class);
-        notificationIntent.putExtra("ALARM_INSTANCE", alarmInstance);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //set flag for this intent
         PendingIntent pendingIntent=PendingIntent.getActivity(this,0,notificationIntent,PendingIntent.FLAG_IMMUTABLE);
         //notification which will be displayed
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -59,7 +64,7 @@ public class AlarmService extends Service {
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentIntent(pendingIntent)  //by clicking on the content, this pending intent is executed ==> open the alarm active class
                 .build();
-        startForeground(startId,notification); //"throw" the notification to foreground
+        startForeground(1,notification); //"throw" the notification to foreground
 
         mediaPlayer.start();
         vibrator.vibrate(2000);
