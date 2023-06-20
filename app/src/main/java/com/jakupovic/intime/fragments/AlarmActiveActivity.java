@@ -1,12 +1,14 @@
 package com.jakupovic.intime.fragments;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.jakupovic.intime.R;
+import com.jakupovic.intime.dataBase.InTimeDataBase;
 
 /**
  * this activity represents the window which opens when an alarm activates itself
@@ -20,10 +22,17 @@ public class AlarmActiveActivity extends AppCompatActivity {
     private Button alarmCancelButton;
     private Button alarmRescheduleButton;
 
+    //database
+    private InTimeDataBase database;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_active);
+        this.database=MainActivity.database;
+        if(database==null){
+            database= Room.databaseBuilder(this.getApplicationContext(),InTimeDataBase.class,"InTime-db").build();
+        }
     }
 
     /**

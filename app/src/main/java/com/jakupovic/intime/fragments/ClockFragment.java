@@ -73,7 +73,6 @@ public class ClockFragment extends Fragment implements HandlerManager {
             @Override
             public void onClick(View v) {
 
-                //addClockCard(); TODO: remove this line
                 Intent intent=new Intent(clockFragmentContext, ClockEditActivity.class);
                 startActivity(intent);
             }

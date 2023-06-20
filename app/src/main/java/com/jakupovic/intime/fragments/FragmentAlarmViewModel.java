@@ -85,6 +85,21 @@ public class FragmentAlarmViewModel extends ViewModel implements Serializable {
 
     }
     /**
+     * this method Updates the alarm activity and registers the alarm with the OS alarm system
+     * @param alarm - alarm instance from database whose activity status will be updated
+     * */
+    public void updateAlarmActivityAsync(Alarm alarm){
+        //TODO: logic for registering/unregistering alarm should be inserted here (and potentially added in a separate interface), the logic determines whether the alarm should be registered by checking the alarm's enabled field
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                alarmViewModelData.getValue().alarmDAO.updateAlarm(alarm);
+            }
+        });
+    }
+
+    /**
      * this method deletes an alarm from database
      * @param idOfAlarmToDelete - int representing the key of the alarm in database entry
      * @return void
@@ -113,7 +128,6 @@ public class FragmentAlarmViewModel extends ViewModel implements Serializable {
      * @return Future - object which represents the thread execution state
      * */
     public Future getAlarmByID(int idOfAlarm){
-        //TODO: insert method for "unregistering" a currently active alarm
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
