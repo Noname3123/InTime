@@ -3,13 +3,16 @@ package com.jakupovic.intime.fragments;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
+import android.app.AlarmManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -19,6 +22,7 @@ import com.jakupovic.intime.alarmBroadcastReciever.AlarmService;
 import com.jakupovic.intime.dataBase.Alarm;
 import com.jakupovic.intime.dataBase.InTimeDataBase;
 import com.jakupovic.intime.databinding.ActivityAlarmActiveBinding;
+import com.jakupovic.intime.interfaces.AndroidOSAlarmManager;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -50,10 +54,9 @@ public class AlarmActiveActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_active);
-        Intent intent=getIntent();
 
         //get resources
-        //alarmReference=;
+        alarmReference=AlarmService.getAlarmInstance();
         alarmTitle = (TextView) findViewById(R.id.alarmTitleDisplayer);
         alarmTime = (TextView) findViewById(R.id.alarmTimeDisplayer);
         alarmDesc = (TextView) findViewById(R.id.alarmDescDisplayer);
@@ -61,11 +64,28 @@ public class AlarmActiveActivity extends AppCompatActivity {
         alarmRescheduleButton = (Button) findViewById(R.id.reRegisterAlarmButton);
 
 
-        //TODO: register alarm functions
+
         this.database = MainActivity.database;
         if (database == null) {
             database = Room.databaseBuilder(this.getApplicationContext(), InTimeDataBase.class, "InTime-db").build();
         }
+        alarmCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelAlarm(v);
+                finish();
+
+            }
+        });
+
+        alarmRescheduleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setAlarmForTomorrow(v);
+                finish();
+            }
+        });
+
 
         PopulateWithData(alarmReference);
     }
@@ -94,5 +114,45 @@ public class AlarmActiveActivity extends AppCompatActivity {
 
     }
 
+    void cancelAlarm(View v){
+        alarmReference.enabled=!alarmReference.enabled;
+        CancelAlarmAsync(alarmReference);
+        //get intent and stop alarm service
+        Intent AlarmServiceIntent =new Intent(getApplicationContext(),AlarmService.class);
+        getApplicationContext().stopService(AlarmServiceIntent);
+    }
 
+    void setAlarmForTomorrow(View v)
+    {
+        //get intent and stop alarm service
+        Intent AlarmServiceIntent =new Intent(getApplicationContext(),AlarmService.class);
+        getApplicationContext().stopService(AlarmServiceIntent);
+        //register alarm for tomorrow
+        AndroidOSAlarmManager.UnregisterAlarm(alarmReference, (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE),getApplicationContext());
+        AndroidOSAlarmManager.RegisterAlarm(alarmReference,(AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE),getApplicationContext());
+    }
+/**
+ * method takes an alarm and changes its active state in the DB to false and unregisters it from the alarm manager
+ * @param alarm  - alarm to cancel
+ * */
+    public void CancelAlarmAsync(Alarm alarm){
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                //Background work
+
+
+                    database.alarmDAO().updateAlarm(alarm);
+                AndroidOSAlarmManager.UnregisterAlarm(alarm, (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE),getApplicationContext());
+
+
+
+            }
+        });
+
+    }
 }

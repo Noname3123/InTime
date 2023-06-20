@@ -61,7 +61,7 @@ public class ClockViewModel extends ViewModel implements Serializable {
      * @return void
      * */
     public void deleteClockInstance(int idOfClockToDelete){
-        //TODO: insert method for allowing or blocking clock deletion depending on alarms
+        
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
 

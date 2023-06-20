@@ -28,7 +28,7 @@ import com.jakupovic.intime.preActivityAppInit.PreActivityApp;
  * */
 public class AlarmService extends Service {
     //alarm ref
-    private Alarm alarmInstance;
+    private static Alarm alarmInstance;
     //alarm alert vars
     private MediaPlayer mediaPlayer;
     private Vibrator vibrator;
@@ -78,7 +78,12 @@ public class AlarmService extends Service {
         mediaPlayer.stop();
         vibrator.cancel();
     }
-
+/**
+ * this method returns the current alarm from DB which activated the alarm
+ * */
+    public static Alarm getAlarmInstance(){
+        return alarmInstance;
+    }
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {

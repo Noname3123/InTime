@@ -42,7 +42,7 @@ public interface AndroidOSAlarmManager {
         if(alarmMgr!=null){
             Calendar cal=Calendar.getInstance();
             cal.setTimeInMillis(alarm.localStartTime);
-            String toastNotifText="Alarm \""+alarm.alarmTitle+"\", scheduled for: "+ cal.get(Calendar.HOUR_OF_DAY) + " : "+cal.get(Calendar.MINUTE)+" is disabled!";
+            String toastNotifText="Alarm \""+alarm.alarmTitle+"\", at : "+ cal.get(Calendar.HOUR_OF_DAY) + " : "+cal.get(Calendar.MINUTE)+" is disabled!";
 
             Intent intent=new Intent(context, AlarmBroadCastReceiver.class);
             intent.putExtra("ALARM_INSTANCE",alarm);

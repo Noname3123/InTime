@@ -134,7 +134,7 @@ public void onResume(){
             public void onClick(View v) {
 
                 View toDelete=(View)(((View)v.getParent()).getParent());
-                mViewModel.deleteAlarmInstance(toDelete.getId());
+                mViewModel.deleteAlarmInstance(toDelete.getId(),getContext());
 
                 alarmCardContainer.removeView((View)(((View)v.getParent()).getParent()));
             }
@@ -183,6 +183,5 @@ public void onResume(){
         }
 
     }
-    //TODO: add logic for registering/unregistering alarms with the Android OS alarm system - the logic will be implemented in the androidFragment view model
 }
 

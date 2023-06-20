@@ -86,7 +86,7 @@ public class FragmentAlarmViewModel extends ViewModel implements Serializable, A
      * @param context - context
      * */
     public void updateAlarmActivityAsync(Alarm alarm, AlarmManager alarMgr, Context context){
-        //TODO: logic for registering/unregistering alarm should be inserted here (and potentially added in a separate interface), the logic determines whether the alarm should be registered by checking the alarm's enabled field
+
         if(alarm.enabled==true){
             AndroidOSAlarmManager.RegisterAlarm(alarm,alarMgr,context);
         }
@@ -103,14 +103,17 @@ public class FragmentAlarmViewModel extends ViewModel implements Serializable, A
     }
 
     /**
-     * this method deletes an alarm from database
+     * this method deletes an alarm from database and unregisters it from the OS alarm manager
      * @param idOfAlarmToDelete - int representing the key of the alarm in database entry
+     * @param context - context of the application
      * @return void
      * */
-    public void deleteAlarmInstance(int idOfAlarmToDelete){
-        //TODO: insert method for "unregistering" a currently active alarm
+    public void deleteAlarmInstance(int idOfAlarmToDelete, Context context){
+
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
 
         executor.execute(new Runnable() {
             @Override
@@ -119,6 +122,12 @@ public class FragmentAlarmViewModel extends ViewModel implements Serializable, A
                 //Background work
                 Alarm alarmToDelete= alarmViewModelData.getValue().alarmDAO.getAlarmByID(idOfAlarmToDelete);
                 alarmViewModelData.getValue().alarmDAO.delete(alarmToDelete);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        AndroidOSAlarmManager.UnregisterAlarm(alarmToDelete,MainActivity.alarmManager,context);
+                    }
+                });
 
             }
         });
