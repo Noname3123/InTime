@@ -1,22 +1,18 @@
 package com.jakupovic.intime.fragments;
 
-import android.app.Application;
-import android.os.Bundle;
+import android.app.AlarmManager;
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.work.WorkRequest;
-import androidx.work.Worker;
 
 import com.jakupovic.intime.dataBase.Alarm;
 import com.jakupovic.intime.dataBase.Clock;
 import com.jakupovic.intime.dataBase.dbDAO.AlarmDAO;
+import com.jakupovic.intime.interfaces.AndroidOSAlarmManager;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,7 +21,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 
 /**
@@ -45,7 +40,7 @@ class alarmViewModelData{
 
 }
 
-public class FragmentAlarmViewModel extends ViewModel implements Serializable {
+public class FragmentAlarmViewModel extends ViewModel implements Serializable, AndroidOSAlarmManager {
 
     private  final MutableLiveData<alarmViewModelData> alarmViewModelData= new MutableLiveData(new alarmViewModelData());
     /**
@@ -87,9 +82,17 @@ public class FragmentAlarmViewModel extends ViewModel implements Serializable {
     /**
      * this method Updates the alarm activity and registers the alarm with the OS alarm system
      * @param alarm - alarm instance from database whose activity status will be updated
+     * @param alarMgr  - alarm manager instance
+     * @param context - context
      * */
-    public void updateAlarmActivityAsync(Alarm alarm){
+    public void updateAlarmActivityAsync(Alarm alarm, AlarmManager alarMgr, Context context){
         //TODO: logic for registering/unregistering alarm should be inserted here (and potentially added in a separate interface), the logic determines whether the alarm should be registered by checking the alarm's enabled field
+        if(alarm.enabled==true){
+            AndroidOSAlarmManager.RegisterAlarm(alarm,alarMgr,context);
+        }
+        else if(alarm.enabled==false){
+            AndroidOSAlarmManager.UnregisterAlarm(alarm,alarMgr,context);
+        }
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(new Runnable() {
             @Override
@@ -147,7 +150,6 @@ public class FragmentAlarmViewModel extends ViewModel implements Serializable {
     }
     /**
      * this method gets all all user created clocks from the DB so that they can be loaded into the alarm edit interface
-     * @param
      * @return Future - object which represents the thread execution state
      * */
     public Future getAllUserCreatedClocks(){

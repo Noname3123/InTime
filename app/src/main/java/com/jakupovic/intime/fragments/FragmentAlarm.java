@@ -123,7 +123,6 @@ public void onResume(){
      * @return void
      * */
     public void registerAlarmCardButtons(CardView card){
-        //TODO: add event registers for enabled switch [in progress]
         //get buttons
         Button editButton=card.findViewById(R.id.buttonEdit);
         SwitchMaterial enabledSwitch=card.findViewById(R.id.alarmCardSwitch);
@@ -167,7 +166,7 @@ public void onResume(){
                     continue; //wait while the getbyid method thread is finished
                 }
                 mViewModel.getAlarmViewModelData().getValue().alarmInstance.enabled=((SwitchMaterial)v).isChecked();
-                mViewModel.updateAlarmActivityAsync(mViewModel.getAlarmViewModelData().getValue().alarmInstance);
+                mViewModel.updateAlarmActivityAsync(mViewModel.getAlarmViewModelData().getValue().alarmInstance,MainActivity.alarmManager,alarmFragment_Context);
 
             }
         });
