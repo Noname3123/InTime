@@ -37,7 +37,7 @@ public interface AndroidOSAlarmManager {
 
         if((currentTime.get(Calendar.HOUR_OF_DAY)>=cal.get(Calendar.HOUR_OF_DAY)) && (currentTime.get(Calendar.MINUTE)>= currentTime.get(Calendar.MINUTE))) {
             //move alarm forward one day
-            cal.set(Calendar.DATE,1); //move Date by one, set to tomorrow
+            cal.set(Calendar.DATE,cal.get(Calendar.DATE)+1); //move Date by one, set to tomorrow
         }
 
 
