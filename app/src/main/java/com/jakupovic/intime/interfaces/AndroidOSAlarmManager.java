@@ -23,14 +23,26 @@ public interface AndroidOSAlarmManager {
      * @param context - context of application
      * */
     static void RegisterAlarm(Alarm alarm, AlarmManager alarmMgr, Context context){
+        //calendar gotten from alarm activation time, used for selecting activation date
         Calendar cal=Calendar.getInstance();
         cal.setTimeInMillis(alarm.localStartTime);
+
+        //current time ref
+        Calendar currentTime=Calendar.getInstance();
+
         String toastNotifText="Alarm \""+alarm.alarmTitle+"\" is scheduled for: "+ cal.get(Calendar.HOUR_OF_DAY) + " : "+cal.get(Calendar.MINUTE)+"!";
         Intent intent=new Intent(context, AlarmBroadCastReceiver.class);
         intent.putExtra("ALARM_INSTANCE",alarm); // send the alarm instance which is registered
         Toast.makeText(context,toastNotifText,Toast.LENGTH_LONG).show();
+
+        if((currentTime.get(Calendar.HOUR_OF_DAY)>=cal.get(Calendar.HOUR_OF_DAY)) && (currentTime.get(Calendar.MINUTE)>= currentTime.get(Calendar.MINUTE))) {
+            //move alarm forward one day
+            cal.set(Calendar.DATE,1); //move Date by one, set to tomorrow
+        }
+
+
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context,alarm.alarmID,intent,PendingIntent.FLAG_IMMUTABLE);
-        alarmMgr.setAlarmClock(new AlarmManager.AlarmClockInfo(alarm.localStartTime,alarmIntent),alarmIntent);
+        alarmMgr.setAlarmClock(new AlarmManager.AlarmClockInfo(cal.getTimeInMillis(),alarmIntent),alarmIntent);
     }
     /**
      * this method unregisters the alarm from the OS

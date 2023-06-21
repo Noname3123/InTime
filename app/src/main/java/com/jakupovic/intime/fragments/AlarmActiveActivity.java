@@ -128,7 +128,8 @@ public class AlarmActiveActivity extends AppCompatActivity {
         Intent AlarmServiceIntent =new Intent(getApplicationContext(),AlarmService.class);
         getApplicationContext().stopService(AlarmServiceIntent);
         //register alarm for tomorrow
-
+        AndroidOSAlarmManager.UnregisterAlarm(alarmReference,(AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE),getApplicationContext());
+        AndroidOSAlarmManager.RegisterAlarm(alarmReference,(AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE),getApplicationContext());
     }
 /**
  * method takes an alarm and changes its active state in the DB to false and unregisters it from the alarm manager
