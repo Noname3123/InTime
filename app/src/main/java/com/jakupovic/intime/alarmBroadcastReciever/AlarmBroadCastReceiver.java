@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
 
 import androidx.annotation.Nullable;
 
@@ -18,10 +19,35 @@ import java.security.Provider;
  * */
 public class AlarmBroadCastReceiver extends BroadcastReceiver {
 
+    //used to activate alarm with screen off.
+    private static PowerManager powerManager;
+    private static PowerManager.WakeLock wakeLock;
+    /**
+     * setter for wakelocks
+     * @param wakelockTag - name of wakelock
+     */
+
+    public static void SetWakelock(String wakelockTag){
+        wakeLock= powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,wakelockTag);
+        wakeLock.acquire(10*60*1000L /*10 minutes*/); //the acquired wakelock lasts for 10min
+    }
+
+    /**
+     * remover for wakelocks
+
+     */
+
+    public static void RemoveWakelock( ){
+        //release the wakelock
+        wakeLock.release();
+        wakeLock=null;
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-       startAlarmService(context,intent);
+       powerManager=(PowerManager) context.getSystemService(Context.POWER_SERVICE);
+       SetWakelock("InTime::AlarmWakelock");
+        startAlarmService(context,intent);
     }
     /**
      * this method starts the alarm service (and te alarm gets triggered)

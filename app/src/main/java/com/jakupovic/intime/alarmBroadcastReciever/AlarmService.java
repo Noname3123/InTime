@@ -67,7 +67,8 @@ public class AlarmService extends Service {
         startForeground(1,notification); //"throw" the notification to foreground
 
         mediaPlayer.start();
-        vibrator.vibrate(2000);
+        long vibrPattern[]={1000,2000,1000};
+        vibrator.vibrate(vibrPattern,0);
         return START_STICKY;
     }
 
@@ -77,6 +78,7 @@ public class AlarmService extends Service {
         //once the service stops, stop vibrating
         mediaPlayer.stop();
         vibrator.cancel();
+        AlarmBroadCastReceiver.RemoveWakelock();
     }
 /**
  * this method returns the current alarm from DB which activated the alarm
