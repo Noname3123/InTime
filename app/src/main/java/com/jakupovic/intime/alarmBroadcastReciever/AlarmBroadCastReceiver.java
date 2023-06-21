@@ -1,18 +1,12 @@
 package com.jakupovic.intime.alarmBroadcastReciever;
 
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.IBinder;
 import android.os.PowerManager;
 
-import androidx.annotation.Nullable;
-
 import com.jakupovic.intime.dataBase.Alarm;
-
-import java.security.Provider;
 
 /**
  * the receiver of the Alarm
