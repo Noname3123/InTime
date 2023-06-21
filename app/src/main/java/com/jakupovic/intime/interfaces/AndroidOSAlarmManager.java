@@ -35,9 +35,9 @@ public interface AndroidOSAlarmManager {
         intent.putExtra("ALARM_INSTANCE",alarm); // send the alarm instance which is registered
         Toast.makeText(context,toastNotifText,Toast.LENGTH_LONG).show();
 
-        if((currentTime.get(Calendar.HOUR_OF_DAY)>=cal.get(Calendar.HOUR_OF_DAY)) && (currentTime.get(Calendar.MINUTE)>= currentTime.get(Calendar.MINUTE))) {
+        if((currentTime.get(Calendar.HOUR_OF_DAY)>=cal.get(Calendar.HOUR_OF_DAY)) && (currentTime.get(Calendar.MINUTE)>= cal.get(Calendar.MINUTE))) {
             //move alarm forward one day
-            cal.set(Calendar.DATE,cal.get(Calendar.DATE)+1); //move Date by one, set to tomorrow
+            cal.set(Calendar.DATE,cal.get(Calendar.DATE)+1); //move Date by one, set to tomorrow (if current time is after the alarm set time)
         }
 
 
