@@ -1,5 +1,7 @@
 package com.jakupovic.intime.fragments;
 
+import android.app.AlarmManager;
+import android.content.Context;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -22,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     public static InTimeDataBase database;
+    public static AlarmManager alarmManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabs = binding.tabs;
         tabs.setupWithViewPager(viewPager);
         database= Room.databaseBuilder(this.getApplicationContext(),InTimeDataBase.class,"InTime-db").build();
+        alarmManager=(AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 
 
     }

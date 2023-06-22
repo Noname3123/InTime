@@ -22,4 +22,9 @@
     <style name="Theme.InTime.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.InTime.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.InTime.Fullscreen" parent="Theme.InTime">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+    </style>
+
 </resources>

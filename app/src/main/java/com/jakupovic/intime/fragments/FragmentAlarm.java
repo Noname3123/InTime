@@ -54,7 +54,6 @@ private Context alarmFragment_Context;
         addAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //addAlarmCard(); //TODO: replace with a more appropriate function (create/edit alarm activity)
                 Intent intent=new Intent(alarmFragment_Context, AlarmEditSettings.class); //gets the intent for which the new activity/window will open
                 waitForLoadListOfClocks();
                 intent.putExtra("LIST_OF_CLOCKS",new ArrayList<Clock>(mViewModel.getAlarmViewModelData().getValue().allClockInstances)); //send the list of all clock instances as arraylist<Clock>
@@ -70,8 +69,6 @@ private Context alarmFragment_Context;
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(FragmentAlarmViewModel.class);
-       //TODO: remove this line insertAlarmAsync(new Alarm(Long.valueOf("1685980800000"),Long.valueOf("1685973600000"),"This is a title","This is an alarm Descr",true));
-       //TODO: remove this line insertAlarmAsync(new Alarm(Long.valueOf("1685980800000"),Long.valueOf("1685973600000"),"This is a 2nd title","This is an alarm Descr",true));
 
 
     }
@@ -126,10 +123,9 @@ public void onResume(){
      * @return void
      * */
     public void registerAlarmCardButtons(CardView card){
-        //TODO: add event registers for enabled switch
         //get buttons
         Button editButton=card.findViewById(R.id.buttonEdit);
-        Button enabledSwitch=card.findViewById(R.id.alarmCardSwitch);
+        SwitchMaterial enabledSwitch=card.findViewById(R.id.alarmCardSwitch);
         Button removeButton=card.findViewById(R.id.buttonDelete);
         //add listeners
         //adds remove card listener
@@ -138,7 +134,7 @@ public void onResume(){
             public void onClick(View v) {
 
                 View toDelete=(View)(((View)v.getParent()).getParent());
-                mViewModel.deleteAlarmInstance(toDelete.getId());
+                mViewModel.deleteAlarmInstance(toDelete.getId(),getContext());
 
                 alarmCardContainer.removeView((View)(((View)v.getParent()).getParent()));
             }
@@ -160,6 +156,20 @@ public void onResume(){
 
             }
         });
+
+        enabledSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CardView card=(CardView)(((View)v.getParent()).getParent());
+                Future toExecute=mViewModel.getAlarmByID( card.getId());
+                while(toExecute.isDone()==false){
+                    continue; //wait while the getbyid method thread is finished
+                }
+                mViewModel.getAlarmViewModelData().getValue().alarmInstance.enabled=((SwitchMaterial)v).isChecked();
+                mViewModel.updateAlarmActivityAsync(mViewModel.getAlarmViewModelData().getValue().alarmInstance,MainActivity.alarmManager,alarmFragment_Context);
+
+            }
+        });
     }
     /**
      * this method makes the main thread wait until all user created clocks are recieved from the database
@@ -173,6 +183,5 @@ public void onResume(){
         }
 
     }
-    //TODO: add logic for registering/unregistering alarms with the Android OS alarm system - the logic will be implemented in the androidFragment view model
 }
 

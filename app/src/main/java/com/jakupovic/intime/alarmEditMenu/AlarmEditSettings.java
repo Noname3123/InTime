@@ -23,6 +23,7 @@ import com.jakupovic.intime.dataBase.Alarm;
 import com.jakupovic.intime.dataBase.Clock;
 import com.jakupovic.intime.dataBase.InTimeDataBase;
 import com.jakupovic.intime.fragments.MainActivity;
+import com.jakupovic.intime.interfaces.AndroidOSAlarmManager;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -76,7 +77,7 @@ public class AlarmEditSettings extends AppCompatActivity {
         });
         //register a click event for alarm save button
         saveBtn.setOnClickListener(new View.OnClickListener() {
-            //TODO: add logic here for registering/unregistering alarms with the Android OS alarm system
+
             @Override
             public void onClick(View v) {
                 SaveButtonClick(v);
@@ -167,11 +168,11 @@ public class AlarmEditSettings extends AppCompatActivity {
             return;
         }
         try {
-            Alarm toInsert = new Alarm(recievedAlarm.alarmID,timeInTimeZone.toInstant().toEpochMilli(),localStartTime.toInstant().toEpochMilli() , alarmTitleTextView.getText().toString(), alarmDescTextView.getText().toString(), timeZoneSelector.getSelectedItem().toString(), alarmSwitch.isChecked()); //TODO: for the second calendar do recalculations into local timezone, NOTE: timeZoneSelector will select object of type clock which contain timezone IDs - which will be added to the alarm info
+            Alarm toInsert = new Alarm(recievedAlarm.alarmID,timeInTimeZone.toInstant().toEpochMilli(),localStartTime.toInstant().toEpochMilli() , alarmTitleTextView.getText().toString(), alarmDescTextView.getText().toString(), timeZoneSelector.getSelectedItem().toString(), alarmSwitch.isChecked());
             insertAlarmAsync(toInsert);
         }
         catch (Exception e){
-            Alarm toInsert = new Alarm(timeInTimeZone.toInstant().toEpochMilli(), localStartTime.toInstant().toEpochMilli(), alarmTitleTextView.getText().toString(), alarmDescTextView.getText().toString(), timeZoneSelector.getSelectedItem().toString(), alarmSwitch.isChecked()); //TODO: for the second calendar do recalculations into local timezone, NOTE: timeZoneSelector will select object of type clock which contain timezone IDs - which will be added to the alarm info
+            Alarm toInsert = new Alarm(timeInTimeZone.toInstant().toEpochMilli(), localStartTime.toInstant().toEpochMilli(), alarmTitleTextView.getText().toString(), alarmDescTextView.getText().toString(), timeZoneSelector.getSelectedItem().toString(), alarmSwitch.isChecked());
             insertAlarmAsync(toInsert);
         } finally {
             // if activity isnt in a test
@@ -186,10 +187,13 @@ public class AlarmEditSettings extends AppCompatActivity {
 
     /**
      * this method accesses the alarm DAO and inserts or updates the alarm in the database in background, depending on whether the recievedAlarm variable of this class is null or not
+     * and it also activates the alarm depending on whether the user pressed the enable button.
      * @param alarm  - alarm to insert (class: Alarm)
      * */
     public void insertAlarmAsync(Alarm alarm){
         ExecutorService executor = Executors.newSingleThreadExecutor();
+        android.os.Handler handler = new Handler(Looper.getMainLooper());
+
 
 
         executor.execute(new Runnable() {
@@ -202,6 +206,15 @@ public class AlarmEditSettings extends AppCompatActivity {
                }
                else{
                    inTimeDataBase.alarmDAO().updateAlarm(alarm);
+               }
+               if(alarm.enabled){
+                   handler.post(new Runnable() {
+                       @Override
+                       public void run() {
+                           AndroidOSAlarmManager.RegisterAlarm(alarm, MainActivity.alarmManager, getApplicationContext());
+
+                       }
+                   });
                }
 
 

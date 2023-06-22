@@ -73,7 +73,6 @@ public class ClockFragment extends Fragment implements HandlerManager {
             @Override
             public void onClick(View v) {
 
-                //addClockCard(); TODO: remove this line
                 Intent intent=new Intent(clockFragmentContext, ClockEditActivity.class);
                 startActivity(intent);
             }
@@ -96,6 +95,7 @@ public class ClockFragment extends Fragment implements HandlerManager {
     //called when activity is stopped (becouse a new one is open), it unregisters the clock handler
     public void onStop(){
         super.onStop();
+        listOfForeignClockViews.clear();
         HandlerManager.ResetHandler(mViewModel.getClockData().getValue().clockUpdateHandler);
     }
 
