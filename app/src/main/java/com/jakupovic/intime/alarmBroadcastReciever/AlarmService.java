@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -42,6 +43,7 @@ public class AlarmService extends Service {
         //get ringtone and vibrator
         Uri currentlySelectedAlarmRingtone = RingtoneManager.getActualDefaultRingtoneUri(getApplicationContext(), RingtoneManager.TYPE_ALARM);
         mediaPlayer=MediaPlayer.create(this,currentlySelectedAlarmRingtone);
+        mediaPlayer.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build()); //the media player should use alarm volume
         mediaPlayer.setLooping(true);
         vibrator=(Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
