@@ -115,7 +115,7 @@ public class AlarmActiveActivity extends AppCompatActivity {
     }
 
     void cancelAlarm(View v){
-        alarmReference.enabled=!alarmReference.enabled;
+        alarmReference.enabled=false;
         CancelAlarmAsync(alarmReference);
         //get intent and stop alarm service
         Intent AlarmServiceIntent =new Intent(getApplicationContext(),AlarmService.class);
