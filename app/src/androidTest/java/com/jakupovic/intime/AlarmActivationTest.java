@@ -78,22 +78,35 @@ public class AlarmActivationTest {
             //if this assert passes, the alarm is already set becouse of the DO NOT CREATE flag
 
             assertTrue(isAlarmIntentSet);
-            try {
-                //wait for 4 seconds until the alarm is registered
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            //since the alarm time is earlier than the current device time, the OS will trigger the alarm (unless the earlier alarm is postponed by one day)
-            //if this assert passes, the alarm isn't triggered (since the alarm service isnt running)
-            assertFalse(isTheAlarmServiceRunning(activity.getApplicationContext(), AlarmService.class));
 
-            AndroidOSAlarmManager.UnregisterAlarm(alarm,alarmManager,activity.getApplicationContext());
+
+
 
 
 
 
         });
+
+        //wait for 15 seconds before relaunching scenario (since the service may start by then - if the alarm is to activate)
+        SystemClock.sleep(15000);
+        //recreate the scenario
+        scenario.recreate();
+        //check the service activity
+        scenario.onActivity(activity -> {
+            AlarmManager alarmManager=(AlarmManager) activity.getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+
+            //since the alarm time is a bit later than the current device time, the OS will trigger the alarm
+            //if this assert passes, it means that the alarm is triggered (since the pending intent launches the broadcast which starts the alarm service)
+            assertFalse(isTheAlarmServiceRunning(activity.getApplicationContext(), AlarmService.class));
+
+            //stop the alarm service
+            activity.getApplicationContext().stopService(new Intent(activity.getApplicationContext(),AlarmService.class));
+            AndroidOSAlarmManager.UnregisterAlarm(alarm,alarmManager,activity.getApplicationContext());
+        });
+        //close the scenario
+        scenario.close();
+
+
 
     }
 
@@ -103,7 +116,7 @@ public class AlarmActivationTest {
      */
 
     @Test
-    public void RegisterAForeignAlarmAfterCurrentTime(){
+    public void RegisterAForeignAlarmAfterCurrentTime() throws InterruptedException {
         //activity preparation
         Context context= InstrumentationRegistry.getInstrumentation().getTargetContext();
         Intent intent=new Intent(context, MainActivity.class);
@@ -112,7 +125,8 @@ public class AlarmActivationTest {
 
         //prepare data
         Calendar cal=Calendar.getInstance();
-
+        //set clock one minute later (so that it activates the same day)
+        cal.set(Calendar.MINUTE,cal.get(Calendar.MINUTE)+1);
 
         Calendar calToActivate=Calendar.getInstance(TimeZone.getTimeZone("US/Eastern"));
         Alarm alarm=new Alarm(5,calToActivate.getTimeInMillis(), cal.getTimeInMillis(), "Test alarm","Alarm description","US/Eastern",true);
@@ -130,19 +144,30 @@ public class AlarmActivationTest {
 
             assertTrue(isAlarmIntentSet);
 
-            //since the alarm time is a bit later than the current device time, the OS will trigger the alarm
-            //if this assert passes, it means that the alarm is triggered (since the pending intent launches the broadcast which starts the alarm service)
-            boolean isTheServiceRunning=isTheAlarmServiceRunning(activity.getApplicationContext(), AlarmService.class);
-            assertTrue(isTheServiceRunning);
-            //TODO: find an alternative way to wait for the service to start before checking its activity
-            //stop the alarm service
-            activity.getApplicationContext().stopService(new Intent(activity.getApplicationContext(),AlarmService.class));
-            AndroidOSAlarmManager.UnregisterAlarm(alarm,alarmManager,activity.getApplicationContext());
+
 
 
 
 
         });
+        //wait for 1 minute and 15 seconds before relaunching scenario (since the alarm will activate and the service will start by then)
+        SystemClock.sleep(75000);
+        //recreate the scenario
+        scenario.recreate();
+        //check the service activity
+        scenario.onActivity(activity -> {
+            AlarmManager alarmManager=(AlarmManager) activity.getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+
+            //since the alarm time is a bit later than the current device time, the OS will trigger the alarm
+            //if this assert passes, it means that the alarm is triggered (since the pending intent launches the broadcast which starts the alarm service)
+            assertTrue(isTheAlarmServiceRunning(activity.getApplicationContext(), AlarmService.class));
+
+            //stop the alarm service
+            activity.getApplicationContext().stopService(new Intent(activity.getApplicationContext(),AlarmService.class));
+            AndroidOSAlarmManager.UnregisterAlarm(alarm,alarmManager,activity.getApplicationContext());
+        });
+        //close the scenario
+        scenario.close();
 
     }
 /**
