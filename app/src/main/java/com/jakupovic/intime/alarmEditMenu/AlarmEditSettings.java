@@ -207,7 +207,7 @@ public class AlarmEditSettings extends AppCompatActivity {
                else{
                    inTimeDataBase.alarmDAO().updateAlarm(alarm);
                }
-               if(alarm.enabled){
+               if(alarm.enabled && getIntent().getBooleanExtra("THIS_IS_TEST",false)==false){
                    handler.post(new Runnable() {
                        @Override
                        public void run() {

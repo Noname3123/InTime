@@ -46,7 +46,7 @@ public class FragmentStopwatch extends Fragment implements HandlerManager {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View fragment= (View) inflater.inflate(R.layout.fragment_fragment_stopwatch, container, false); //inflate fragment
-        stopwatchText= (TextView) fragment.findViewById(R.id.ClockLocalTime);
+        stopwatchText= (TextView) fragment.findViewById(R.id.StopwatchTime);
         lapDataTextView = (TextView) fragment.findViewById(R.id.lapsData);
         buttonStart =(Button) fragment.findViewById(R.id.buttonStart);
         buttonStop =(Button) fragment.findViewById(R.id.buttonStop);

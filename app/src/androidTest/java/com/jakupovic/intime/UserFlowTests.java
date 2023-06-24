@@ -8,6 +8,7 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.instanceOf;
@@ -32,10 +33,12 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.jakupovic.intime.ClockEditMenu.ClockEditActivity;
 import com.jakupovic.intime.alarmEditMenu.AlarmEditSettings;
 import com.jakupovic.intime.dataBase.Alarm;
 import com.jakupovic.intime.dataBase.Clock;
 import com.jakupovic.intime.dataBase.InTimeDataBase;
+import com.jakupovic.intime.fragments.MainActivity;
 
 import org.hamcrest.Matcher;
 import org.junit.Rule;
@@ -55,6 +58,7 @@ public class UserFlowTests {
 
     @Rule
     public ActivityScenarioRule<AlarmEditSettings> mActivityRule =new ActivityScenarioRule<>(AlarmEditSettings.class);
+    public ActivityScenarioRule<ClockEditActivity> mActivityClockRule =new ActivityScenarioRule<>(ClockEditActivity.class);
 
     /**
      * this method simulates an user flow in which an user creates an alarm
@@ -127,6 +131,45 @@ public class UserFlowTests {
 
 
 
+    }
+    /**
+     * this test simulates an user creating a new clock
+     */
+
+    @Test
+    public void userCreatesANewClock(){
+        //variables to type
+        String clockTitle ="This is an example clock";
+        String clockTimezone="US/Eastern";
+
+        //init scenario
+        Context context= InstrumentationRegistry.getInstrumentation().getTargetContext();
+        Intent intent=new Intent(context, ClockEditActivity.class);
+        intent.putExtra("THIS_IS_TEST",true); //notify activity that it is a test enviro
+        ActivityScenario<ClockEditActivity> scenario = ActivityScenario.launch(intent); //launch activity with test intent, notifiying it that it is in a test environment
+
+        onView(withId(R.id.clockDescriptionInput) ).perform(typeText(clockTitle));
+        onView(withId(R.id.AutoCompleteClockTimezoneSelector) ).perform(typeText(clockTimezone));
+
+        onView(withId(R.id.clockDescriptionInput) ).check(matches(withText(clockTitle)));
+        onView(withId(R.id.AutoCompleteClockTimezoneSelector) ).check(matches(withText(clockTimezone)));
+
+        onView(withId(R.id.saveClock)).perform(click());
+
+        scenario.onActivity(activity -> {
+            InTimeDataBase db=activity.getRoomDatabase();
+            List<Clock> clocks= db.clockDAO().getAll();
+            clocks.forEach(clock -> {
+                assertEquals(clock.timeZone,clockTimezone);
+                assertEquals(clock.location,clockTitle);
+
+
+
+
+                activity.finish(); //finish the activity after the db inserted test is done
+            });
+
+        });
     }
 
 
