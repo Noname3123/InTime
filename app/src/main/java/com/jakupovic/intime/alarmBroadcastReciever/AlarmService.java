@@ -24,6 +24,8 @@ import com.jakupovic.intime.dataBase.Alarm;
 import com.jakupovic.intime.fragments.AlarmActiveActivity;
 import com.jakupovic.intime.preActivityAppInit.PreActivityApp;
 
+import java.io.IOException;
+
 /**
  * this class represents an alarm service which will start the alarm notification and execute the alarm alert
  * */
@@ -42,9 +44,22 @@ public class AlarmService extends Service {
 
         //get ringtone and vibrator
         Uri currentlySelectedAlarmRingtone = RingtoneManager.getActualDefaultRingtoneUri(getApplicationContext(), RingtoneManager.TYPE_ALARM);
-        mediaPlayer=MediaPlayer.create(this,currentlySelectedAlarmRingtone);
-        mediaPlayer.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build()); //the media player should use alarm volume
+        mediaPlayer=new MediaPlayer();
+        try {
+            //load ringtone
+            mediaPlayer.setDataSource(this,currentlySelectedAlarmRingtone);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        //use ALARM volume
+        mediaPlayer.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()); //the media player should use alarm volume
         mediaPlayer.setLooping(true);
+        try {
+            //prepare the defined player
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         vibrator=(Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
 /**
