@@ -70,7 +70,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/design_default_color_secondary_variant"
+        android:backgroundTint="#219BCC"
         android:text="@string/AlarmAddButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
