@@ -77,12 +77,14 @@
 
             <EditText
                 android:id="@+id/alarmDescInput"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
                 android:layout_width="wrap_content"
-                android:layout_height="71dp"
+                android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="@string/alarmDescInputFieldText"
                 android:importantForAutofill="no"
-                android:inputType="textPersonName" />
+                android:inputType="textMultiLine" />
 
             <View
                 android:id="@+id/divider2"
